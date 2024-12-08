@@ -5,6 +5,7 @@ import { TbEditCircle } from "react-icons/tb";
 import { RiDeleteBin5Line } from "react-icons/ri";
 export default function Page() {
   const router = useRouter();
+  const [eflag, seteflag] = useState(false)
     const [vtpe, setvtpe] = useState("")
     const [vmodel, setvmodel] = useState({})
     const [alert, setalert] = useState("")
@@ -15,14 +16,15 @@ export default function Page() {
     const fetchv = async () => {
         const response = await fetch("/api/alldata?dtyp=vehicle");
         let vjson = await response.json();
+        if (vjson.result.length === 0) setvalert("No Vehicle Added");
+        setvalert("");
         setvhcl(vjson.result);
         console.log(vhcl)
-        if (vjson.result.length === 0) setvalert("No Vehicle Added");
       };
     
       useEffect(() => {
          fetchv();
-      },[vtpe]);
+      },[vtpe,vmodel]);
 
 
     const onchange = (e) => {
@@ -33,6 +35,7 @@ export default function Page() {
       };
 
       const cvhcl = (e) => {
+        setvalert("Loading...")
         setvtpe(e.target.value);
       };
 
@@ -42,7 +45,36 @@ export default function Page() {
       };
       
       const deletev = async () => {}
-      const handledit = async () => {}
+      const handledit = async (dtls) => {
+        seteflag(true);
+        setvmodel({...dtls,okey:dtls.vno})
+      }
+
+
+      const handleupdate = async (e) => {
+        setalert("Updating Details...")
+        e.preventDefault();
+        const co = {...vmodel,pkey:"vno",dtype:"vehicle" }; 
+        try{
+          const response= await fetch('api/alldata',{
+            method:'PUT',
+            headers:{ 'Content-Type':'application/json'},
+            body: JSON.stringify(co)
+          });
+          if(response.ok){
+            console.log("Details Updated Sucessfully ! ")
+            setalert("Details Updated Successfully !!")
+            seteflag(false);
+           setvmodel({})
+          }
+          else{
+            console.log("Error Updating Details !!")
+          }
+        }
+        catch(error){
+      console.error('Error:',error);
+        }
+      }
 
     const addv = async (e) => {
         e.preventDefault();
@@ -92,7 +124,7 @@ console.log(response)
            {(b.vtype===vtpe || vtpe==="All")?(<><div
            className='space-y-2 sm:space-y-3 xs:flex justify-between text-teal-950 text-lg font-semibold bg-gradient-to-r from-cyan-400 to-green-300 rounded-md p-4 shadow-lg hover:cursor-pointer hover:opacity-80 container mx-auto'
            ><span  onClick={() => handlevdetails(b)} >{b.vtype} : {b.vno}</span>
-       <div className="  flex justify-center gap-20  xs:justify-between xs:gap-8">   <button className= "   hover:bg-green-700 bg-green-200   p-2 rounded-full" onClick={() => handledit()}><TbEditCircle className="text-green-700 hover:text-green-200"  size={30}  /></button>
+       <div className="  flex justify-center gap-20  xs:justify-between xs:gap-8">   <button className= "   hover:bg-green-700 bg-green-200   p-2 rounded-full" onClick={() => handledit(b)}><TbEditCircle className="text-green-700 hover:text-green-200"  size={30}  /></button>
           <button className="hover:bg-red-700 bg-red-200     p-2 rounded-full " onClick={() => deletev()}><RiDeleteBin5Line className="text-red-700 hover:text-red-200"  size={30} /></button>
           </div> </div></>):"" }</div>
       ))}</div>
@@ -117,12 +149,15 @@ console.log(response)
   <option value="Hyva">Hyva</option>
   <option value="Poclain">Poclain</option>
 </select>
-    <button
+{eflag? (<><button onClick={(e) => handleupdate(e)} 
+      className="flex justify-center gap-2 w-full py-2 mt-4 border-2 border-green-500 bg-green-600 bg-opacity-5 text-green-500 font-semibold rounded-full hover:bg-green-700 hover:text-green-50 "
+      >Update Vehicle</button></>):
+    (<><button
       type="submit"
       className="flex justify-center gap-2 w-full py-2 mt-4 border-2 border-green-500 bg-green-600 bg-opacity-5 text-green-500 font-semibold rounded-full hover:bg-green-700 hover:text-green-50 "
     >
       Add Vehicle
-    </button>
+    </button></>)}
   </form>
   {alert && (
     <div className="text-center mt-4 text-green-200 font-semibold">

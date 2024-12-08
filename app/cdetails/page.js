@@ -4,10 +4,11 @@ import { TbEditCircle } from "react-icons/tb";
 import { useSearchParams } from "next/navigation";
 import { RiDeleteBin5Line } from "react-icons/ri";
 export default function Home() {
+const [eflag, seteflag] = useState(false)
 const [cntr, setcntr] = useState([])
 const [cmodel, setcmodel] = useState({})
 const [alert, setalert] = useState("");
-const [calert, setcalert] = useState("")
+const [calert, setcalert] = useState("Loading...")
 const [cd, setcd] = useState(null)
 
 
@@ -16,6 +17,7 @@ const fetchc = async () => {
   let cjson = await response.json();
   setcntr(cjson.ac);
   console.log(cntr)
+  setcalert("");
   if (cjson.ac.length === 0) setcalert("No Details Added");
 };
 
@@ -32,7 +34,34 @@ useEffect(() => {
       };
 
       const deletec = async () => {}
-      const handledit = async () => {}
+      const handleupdate = async (e) => {
+        setalert("Updating Details...")
+        e.preventDefault();
+        const co = {...cmodel }; 
+        try{
+          const response= await fetch('api/cdetails',{
+            method:'PUT',
+            headers:{ 'Content-Type':'application/json'},
+            body: JSON.stringify(co)
+          });
+          if(response.ok){
+            console.log("Details Updated Sucessfully ! ")
+            setalert("Details Updated Successfully !!")
+            seteflag(false);
+           setcmodel({})
+          }
+          else{
+            console.log("Error Updating Details !!")
+          }
+        }
+        catch(error){
+      console.error('Error:',error);
+        }
+      }
+      const handleditf = async (dtls) => {
+        seteflag(true);
+        setcmodel(dtls)
+      }
       const addcntr = async (e) => {
         e.preventDefault();
         setalert("Adding details...");
@@ -70,7 +99,7 @@ console.log(response)
         <div key={b._id}
             className='space-y-2 sm:space-y-3 xs:flex justify-between text-teal-950 text-lg font-semibold bg-gradient-to-r from-cyan-400 to-green-300 rounded-md p-4 shadow-lg hover:cursor-pointer hover:opacity-80 container mx-auto'>      
            <span  className="inline-block w-full sm:w-3/5">{b.rate} -- {b.trip} </span>  
-       <div className="  flex justify-center gap-20  xs:justify-between xs:gap-8">   <button className= "   hover:bg-green-700 bg-green-200   p-2 rounded-full" onClick={() => handledit()}><TbEditCircle className="text-green-700 hover:text-green-200"  size={30}  /></button>
+       <div className="  flex justify-center gap-20  xs:justify-between xs:gap-8">   <button className= "   hover:bg-green-700 bg-green-200   p-2 rounded-full" onClick={() => handleditf(b)}><TbEditCircle className="text-green-700 hover:text-green-200"  size={30}  /></button>
           <button className="hover:bg-red-700 bg-red-200     p-2 rounded-full " onClick={() => deletec()}><RiDeleteBin5Line className="text-red-700 hover:text-red-200"  size={30} /></button>
           </div> </div>
       ))}</div>
@@ -102,12 +131,15 @@ console.log(response)
       className=" w-full px-4 py-2 border border-green-500 bg-green-600 bg-opacity-20 rounded-full focus:outline-none focus:ring-2 focus:ring-green-600"
 
     />
-    <button
+    {eflag? (<><button onClick={(e) => handleupdate(e)} 
+      className="flex justify-center gap-2 w-full py-2 mt-4 border-2 border-green-500 bg-green-600 bg-opacity-5 text-green-500 font-semibold rounded-full hover:bg-green-700 hover:text-green-50 "
+      >Update Data</button></>):
+    (<><button
       type="submit"
       className="flex justify-center gap-2 w-full py-2 mt-4 border-2 border-green-500 bg-green-600 bg-opacity-5 text-green-500 font-semibold rounded-full hover:bg-green-700 hover:text-green-50 "
     >
       Add Data
-    </button>
+    </button></>)}
   </form>
   {alert && (
     <div className="text-center mt-4 text-green-200 font-semibold">

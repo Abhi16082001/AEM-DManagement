@@ -3,12 +3,13 @@ import { useSearchParams } from "next/navigation";
 import { useState ,useEffect, Suspense} from "react"
 import { TbEditCircle } from "react-icons/tb";
 import { RiDeleteBin5Line } from "react-icons/ri";
-export default function Home() {
+export default function Page() {
+  const [eflag, seteflag] = useState(false)
     const [vd, setvd] = useState(null)
     const [vmodel, setvmodel] = useState({})
     const [alert, setalert] = useState("")
     const [vhcl, setvhcl] = useState([])
-    const [valert, setvalert] = useState("")
+    const [valert, setvalert] = useState("Loading...")
 
 
     const fetchv = async () => {
@@ -16,6 +17,7 @@ export default function Home() {
         let vjson = await response.json();
         setvhcl(vjson.av);
         console.log(vhcl)
+        setvalert("");
         if (vjson.av.length === 0) setvalert("No Details Added");
       };
     
@@ -32,10 +34,36 @@ export default function Home() {
       };
 
    
-
+      const handleupdate = async (e) => {
+        setalert("Updating Details...")
+        e.preventDefault();
+        const co = {...vmodel }; 
+        try{
+          const response= await fetch('api/vdetails',{
+            method:'PUT',
+            headers:{ 'Content-Type':'application/json'},
+            body: JSON.stringify(co)
+          });
+          if(response.ok){
+            console.log("Details Updated Sucessfully ! ")
+            setalert("Details Updated Successfully !!")
+            seteflag(false);
+           setvmodel({})
+          }
+          else{
+            console.log("Error Updating Details !!")
+          }
+        }
+        catch(error){
+      console.error('Error:',error);
+        }
+      }
       
       const deletev = async () => {}
-      const handledit = async () => {}
+      const handledit = async (dtls) => {
+        seteflag(true);
+        setvmodel(dtls)
+      }
 
     const adddetails = async (e) => {
         e.preventDefault();
@@ -75,7 +103,7 @@ console.log(response)
         <div key={b._id}
             className='space-y-2 sm:space-y-3 xs:flex justify-between text-teal-950 text-lg font-semibold bg-gradient-to-r from-cyan-400 to-green-300 rounded-md p-4 shadow-lg hover:cursor-pointer hover:opacity-80 container mx-auto'>      
            <span  className="inline-block w-full sm:w-3/5">{b.date} -- {b.trip} </span>  
-       <div className="  flex justify-center gap-20  xs:justify-between xs:gap-8">   <button className= "   hover:bg-green-700 bg-green-200   p-2 rounded-full" onClick={() => handledit()}><TbEditCircle className="text-green-700 hover:text-green-200"  size={30}  /></button>
+       <div className="  flex justify-center gap-20  xs:justify-between xs:gap-8">   <button className= "   hover:bg-green-700 bg-green-200   p-2 rounded-full" onClick={() => handledit(b)}><TbEditCircle className="text-green-700 hover:text-green-200"  size={30}  /></button>
           <button className="hover:bg-red-700 bg-red-200     p-2 rounded-full " onClick={() => deletev()}><RiDeleteBin5Line className="text-red-700 hover:text-red-200"  size={30} /></button>
           </div> </div>
       ))}</div>
@@ -107,12 +135,15 @@ console.log(response)
 
     />
   
-    <button
+  {eflag? (<><button onClick={(e) => handleupdate(e)} 
+      className="flex justify-center gap-2 w-full py-2 mt-4 border-2 border-green-500 bg-green-600 bg-opacity-5 text-green-500 font-semibold rounded-full hover:bg-green-700 hover:text-green-50 "
+      >Update Data</button></>):
+    (<><button
       type="submit"
       className="flex justify-center gap-2 w-full py-2 mt-4 border-2 border-green-500 bg-green-600 bg-opacity-5 text-green-500 font-semibold rounded-full hover:bg-green-700 hover:text-green-50 "
     >
-      Add Details
-    </button>
+      Add Data
+    </button></>)}
   </form>
   {alert && (
     <div className="text-center mt-4 text-green-200 font-semibold">
