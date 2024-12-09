@@ -5,6 +5,9 @@ import { TbEditCircle } from "react-icons/tb";
 import { RiDeleteBin5Line } from "react-icons/ri";
 export default function Page() {
   const router = useRouter();
+  const [dflag, setdflag] = useState(false)
+  const [dalert, setdalert] = useState("")
+  const [chck, setchck] = useState("")
   const [eflag, seteflag] = useState(false)
     const [tmodel, settmodel] = useState({})
     const [alert, setalert] = useState("")
@@ -38,8 +41,10 @@ export default function Page() {
         const etd = encodeURIComponent(JSON.stringify(td));
         router.push(`/tdetails?tdtls=${etd}`);
       };
-      
-      const deletet = async () => {}
+       
+      const deletet = async (bul,id) => {
+        setdflag(bul);setchck(id);
+      }
       const handledit = async (dtls) => {
         seteflag(true);
         settmodel({...dtls,okey:dtls.tid})
@@ -70,7 +75,34 @@ export default function Page() {
         }
       }
       
-
+      const handledel = async (id) => {
+        setdalert(`Deleting Data ...`)
+        const co = {id:id,pkey:"tid",dtype:"tender" }; 
+        // console.log(JSON.stringify({ bid}))
+        try {
+            const response = await fetch('/api/alldata', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(co ), // Send the ID in the request body
+            });
+      
+            const data = await response.json();
+            console.log(response)
+            console.log(data)
+            if (!data.ok) {
+              setdalert(data.message)
+                throw new Error(data.message || 'Failed to delete the Data');
+            }
+      
+            console.log(data.message); // Log success message
+            setdalert(` Data deleted successfully.`)
+            settmodel({})
+        } catch (erro) {
+            console.log('Error:', erro);
+        }
+      };
     const addt = async (e) => {
         e.preventDefault();
         setalert("Adding Tender...");
@@ -112,11 +144,15 @@ console.log(response)
            className='space-y-2 sm:space-y-3 xs:flex justify-between text-teal-950 text-lg font-semibold bg-gradient-to-r from-cyan-400 to-green-300 rounded-md p-4 shadow-lg hover:cursor-pointer hover:opacity-80 container mx-auto'
            ><span  onClick={() => handletdetails(b)} >{b.tid} : {b.name}: {b.td}</span>
        <div className="  flex justify-center gap-20  xs:justify-between xs:gap-8">   <button className= "   hover:bg-green-700 bg-green-200   p-2 rounded-full" onClick={() => handledit(b)}><TbEditCircle className="text-green-700 hover:text-green-200"  size={30}  /></button>
-          <button className="hover:bg-red-700 bg-red-200     p-2 rounded-full " onClick={() => deletet()}><RiDeleteBin5Line className="text-red-700 hover:text-red-200"  size={30} /></button>
+       { (dflag && chck===b.tid)? (<><button onClick={() => handledel(b.tid)} className="bg-red-500">Yes</button > <button onClick={() => deletet(false,b.tid)} className="bg-green-500">No</button></>):(<><button className="hover:bg-red-700 bg-red-200     p-2 rounded-full " onClick={() => deletet(true,b.tid)}><RiDeleteBin5Line className="text-red-700 hover:text-red-200"  size={30} /></button></>)}
           </div> </div>
       ))}</div>
 
-
+{dalert && (
+    <div className="text-center mt-4 text-red-300 font-semibold">
+      {dalert}
+    </div>
+  )}
 <form onSubmit={addt} className="space-y-4">
     <label htmlFor="tid" className="block text-md font-semibold text-green-500">
       Tender ID :

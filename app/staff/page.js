@@ -5,6 +5,9 @@ import { TbEditCircle } from "react-icons/tb";
 import { RiDeleteBin5Line } from "react-icons/ri";
 export default function Page() {
   const router = useRouter();
+  const [dflag, setdflag] = useState(false)
+  const [chck, setchck] = useState("")
+  const [dalert, setdalert] = useState("")
   const [eflag, seteflag] = useState(false)
     const [srle, setsrle] = useState("")
     const [smodel, setsmodel] = useState({})
@@ -44,12 +47,45 @@ export default function Page() {
         router.push(`/sdetails?sdtls=${esd}`);
       };
       
-      const deletes = async () => {}
+      const deletes = async (bul,id) => {
+        setdflag(bul);
+        setchck(id);
+      }
+
+      const handledel = async (id) => {
+        setdalert(`Deleting Data ...`)
+        const co = {id:id,pkey:"sid",dtype:"staff" }; 
+        // console.log(JSON.stringify({ bid}))
+        try {
+            const response = await fetch('/api/alldata', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(co ), // Send the ID in the request body
+            });
+      
+            const data = await response.json();
+            console.log(response)
+            console.log(data)
+            if (!data.ok) {
+              setdalert(data.message)
+                throw new Error(data.message || 'Failed to delete the Data');
+            }
+      
+            console.log(data.message); // Log success message
+            setdalert(` Data deleted successfully.`)
+            setsmodel({})
+        } catch (erro) {
+            console.log('Error:', erro);
+        }
+      };
+
       const handledit = async (dtls) => {
         seteflag(true);
         setsmodel({...dtls,okey:dtls.sid})
       }
-
+ 
 
       const handleupdate = async (e) => {
         setalert("Updating Details...")
@@ -75,6 +111,8 @@ export default function Page() {
       console.error('Error:',error);
         }
       }
+
+     
 
     const adds = async (e) => {
         e.preventDefault();
@@ -126,10 +164,14 @@ console.log(response)
            className='space-y-2 sm:space-y-3 xs:flex justify-between text-teal-950 text-lg font-semibold bg-gradient-to-r from-cyan-400 to-green-300 rounded-md p-4 shadow-lg hover:cursor-pointer hover:opacity-80 container mx-auto'
            ><span  onClick={() => handlesdetails(b)} >{b.sid} : {b.name}</span>
        <div className="  flex justify-center gap-20  xs:justify-between xs:gap-8">   <button className= "   hover:bg-green-700 bg-green-200   p-2 rounded-full" onClick={() => handledit(b)}><TbEditCircle className="text-green-700 hover:text-green-200"  size={30}  /></button>
-          <button className="hover:bg-red-700 bg-red-200     p-2 rounded-full " onClick={() => deletes()}><RiDeleteBin5Line className="text-red-700 hover:text-red-200"  size={30} /></button>
+       { (dflag && chck===b.sid)? (<><button onClick={() => handledel(b.sid)} className="bg-red-500">Yes</button > <button onClick={() => deletes(false,b.sid)} className="bg-green-500">No</button></>):(<><button className="hover:bg-red-700 bg-red-200     p-2 rounded-full " onClick={() => deletes(true,b.sid)}><RiDeleteBin5Line className="text-red-700 hover:text-red-200"  size={30} /></button></>)}
           </div> </div></>):"" }</div>
       ))}</div>
-
+{dalert && (
+    <div className="text-center mt-4 text-red-300 font-semibold">
+      {dalert}
+    </div>
+  )}
 
 <form onSubmit={adds} className="space-y-4">
     <label htmlFor="sid" className="block text-md font-semibold text-green-500">

@@ -81,3 +81,35 @@ delete vdtls._id;
           // await client.close();
         }
       }
+
+
+      export async function DELETE(request) {
+        // Replace the uri string with your connection string.
+        
+        
+        // Parse the request body to get the ID or any unique identifier for deletion
+        const vid = await request.json(); // Assuming the request body contains the ID to delete
+    console.log("vid",vid.mid)
+    const client = await getClient();
+        try {
+            const database = client.db('AnilEarthMover');
+            const vhcl = database.collection('vehicle');
+            // Perform the delete operation
+          
+            const result = await vhcl.deleteOne({_id: new ObjectId(vid.mid)  });
+    
+            if (result.deletedCount === 1) {
+                console.log(`Successfully deleted the vehicle data`);
+                return NextResponse.json({ message: `Vehicle data deleted successfully.`, ok: true });
+            } else {
+                return NextResponse.json({ message: `No data found with ID: ${vid}.`, ok: false }, { status: 404 });
+            }
+         
+        } catch (error) {
+            console.error('Error deleting data:', error);
+            return NextResponse.json({ message: 'Internal Server Error', ok: false }, { status: 500 });
+        } finally {
+            // Ensures that the client will close when you finish/error
+            // await client.close();
+        }
+    }

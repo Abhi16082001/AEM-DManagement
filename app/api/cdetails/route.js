@@ -81,3 +81,35 @@ delete cdtls._id;
           // await client.close();
         }
       }
+
+
+      export async function DELETE(request) {
+        // Replace the uri string with your connection string.
+        
+        
+        // Parse the request body to get the ID or any unique identifier for deletion
+        const cid = await request.json(); // Assuming the request body contains the ID to delete
+    console.log("cid",cid.mid)
+    const client = await getClient();
+        try {
+            const database = client.db('AnilEarthMover');
+            const cntr = database.collection('contractor');
+            // Perform the delete operation
+          
+            const result = await cntr.deleteOne({_id: new ObjectId(cid.mid)  });
+    
+            if (result.deletedCount === 1) {
+                console.log(`Successfully deleted the contractor data`);
+                return NextResponse.json({ message: `Contractor data deleted successfully.`, ok: true });
+            } else {
+                return NextResponse.json({ message: `No data found with ID: ${cid}.`, ok: false }, { status: 404 });
+            }
+         
+        } catch (error) {
+            console.error('Error deleting data:', error);
+            return NextResponse.json({ message: 'Internal Server Error', ok: false }, { status: 500 });
+        } finally {
+            // Ensures that the client will close when you finish/error
+            // await client.close();
+        }
+    }

@@ -6,11 +6,13 @@ import { RiDeleteBin5Line } from "react-icons/ri";
 export default function Home() {
 const [eflag, seteflag] = useState(false)
 const [cntr, setcntr] = useState([])
+const [chck, setchck] = useState("")
 const [cmodel, setcmodel] = useState({})
 const [alert, setalert] = useState("");
 const [calert, setcalert] = useState("Loading...")
 const [cd, setcd] = useState(null)
-
+const [dflag, setdflag] = useState(false)
+const [dalert, setdalert] = useState("")
 
 const fetchc = async () => {
   const response = await fetch(`/api/cdetails?cid=${encodeURIComponent(cd.cid)}`);
@@ -33,7 +35,37 @@ useEffect(() => {
         });
       };
 
-      const deletec = async () => {}
+      const handledel = async (mid) => {
+        setdalert(`Deleting Data ...`)
+        console.log(mid)
+        console.log({mid})
+        // console.log(JSON.stringify({ bid}))
+        try {
+            const response = await fetch('/api/cdetails', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ mid} ), // Send the ID in the request body
+            });
+      
+            const data = await response.json();
+            if (!response.ok) {
+              setdalert(data.message)
+                throw new Error(data.message || 'Failed to delete the Data');
+            }
+      
+            console.log(data.message); // Log success message
+            setdalert(` Data deleted successfully.`)
+            setcmodel({})
+        } catch (erro) {
+            console.log('Error:', erro);
+        }
+      };
+
+      const deletec = async (bul,id) => {
+        setdflag(bul);setchck(id);
+      }
       const handleupdate = async (e) => {
         setalert("Updating Details...")
         e.preventDefault();
@@ -100,9 +132,15 @@ console.log(response)
             className='space-y-2 sm:space-y-3 xs:flex justify-between text-teal-950 text-lg font-semibold bg-gradient-to-r from-cyan-400 to-green-300 rounded-md p-4 shadow-lg hover:cursor-pointer hover:opacity-80 container mx-auto'>      
            <span  className="inline-block w-full sm:w-3/5">{b.rate} -- {b.trip} </span>  
        <div className="  flex justify-center gap-20  xs:justify-between xs:gap-8">   <button className= "   hover:bg-green-700 bg-green-200   p-2 rounded-full" onClick={() => handleditf(b)}><TbEditCircle className="text-green-700 hover:text-green-200"  size={30}  /></button>
-          <button className="hover:bg-red-700 bg-red-200     p-2 rounded-full " onClick={() => deletec()}><RiDeleteBin5Line className="text-red-700 hover:text-red-200"  size={30} /></button>
+       { (dflag && chck===b._id)? (<><button onClick={() => handledel(b._id)} className="bg-red-500">Yes</button > <button onClick={() => deletec(false,b._id)} className="bg-green-500">No</button></>):(<><button className="hover:bg-red-700 bg-red-200     p-2 rounded-full " onClick={() => deletec(true,b._id)}><RiDeleteBin5Line className="text-red-700 hover:text-red-200"  size={30} /></button></>)}
           </div> </div>
       ))}</div>
+
+{dalert && (
+    <div className="text-center mt-4 text-red-300 font-semibold">
+      {dalert}
+    </div>
+  )}
   {calert && (
     <div className="text-center mt-4 text-red-200 font-semibold">
       {calert}
