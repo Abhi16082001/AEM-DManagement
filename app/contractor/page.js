@@ -61,6 +61,7 @@ export default function Page() {
             headers:{ 'Content-Type':'application/json'},
             body: JSON.stringify(co)
           });
+          const data= await response.json()
           if(response.ok){
             console.log("Details Updated Sucessfully ! ")
             setalert("Details Updated Successfully !!")
@@ -69,6 +70,7 @@ export default function Page() {
           }
           else{
             console.log("Error Updating Details !!")
+            setalert(data.message)
           }
         }
         catch(error){
@@ -108,21 +110,21 @@ export default function Page() {
     const addc = async (e) => {
         e.preventDefault();
         setalert("Adding Contractor...");
-        const dtyp="contractor"
-        const co = {  ...cmodel };
+        const co = {  ...cmodel,dtyp:"contractor",pkey:"cid" };
         try {
-          const response = await fetch(`/api/alldata?dtyp=${dtyp}`, {
+          const response = await fetch("/api/alldata", {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(co),
           });
 console.log(response)
+const data= await response.json()
           if (response.ok) {
             setalert("Contractor added Successfully!");
             setcmodel({});
             setcalert("");
           } else {
-            setalert("Error in adding Contractor.");
+            setalert(data.message);
           }
         } catch (error) {
           setalert("Error in adding Contractor.");
@@ -172,6 +174,16 @@ console.log(response)
     <input
       pattern="^(?!\s*$).+" title="This field cannot be empty or just spaces" value={cmodel?.name || ""} required type="text" name="name" id="name"
       onChange={onchange}       placeholder="Enter Name"
+      className=" w-full px-4 py-2 border border-green-500  bg-green-600 bg-opacity-20 rounded-full focus:outline-none focus:ring-2 focus:ring-green-600"
+
+    />
+
+<label htmlFor="pbal" className="block text-md font-semibold text-green-500">
+      Previous Balance :
+    </label>
+    <input
+      pattern="^(?!\s*$).+" title="This field cannot be empty or just spaces" value={cmodel?.pbal || ""} required type="text" name="pbal" id="pbal"
+      onChange={onchange}       placeholder="Enter Previous Balance"
       className=" w-full px-4 py-2 border border-green-500  bg-green-600 bg-opacity-20 rounded-full focus:outline-none focus:ring-2 focus:ring-green-600"
 
     />

@@ -136,7 +136,7 @@ console.log(response)
   {staff.map((b) => (
         <div key={b._id}
             className='space-y-2 sm:space-y-3 xs:flex justify-between text-teal-950 text-lg font-semibold bg-gradient-to-r from-cyan-400 to-green-300 rounded-md p-4 shadow-lg hover:cursor-pointer hover:opacity-80 container mx-auto'>      
-           <span  className="inline-block w-full sm:w-3/5">{b.amount} -- {b.date} </span>  
+           <span  className="inline-block w-full sm:w-3/5">{b.amount}-- {b.rmrk} -- {b.date} </span>  
        <div className="  flex justify-center gap-20  xs:justify-between xs:gap-8">   <button className= "   hover:bg-green-700 bg-green-200   p-2 rounded-full" onClick={() => handledit(b)}><TbEditCircle className="text-green-700 hover:text-green-200"  size={30}  /></button>
          { (dflag && chck===b._id)? (<><button onClick={() => handledel(b._id)} className="bg-red-500">Yes</button > <button onClick={() => deletes(false,b._id)} className="bg-green-500">No</button></>):(<><button className="hover:bg-red-700 bg-red-200     p-2 rounded-full " onClick={() => deletes(true,b._id)}><RiDeleteBin5Line className="text-red-700 hover:text-red-200"  size={30} /></button></>)}
           </div> </div>
@@ -156,6 +156,15 @@ console.log(response)
  
 <div>Add amount and date:</div>
 <form onSubmit={addstaff} className="space-y-4">
+    <label htmlFor="date" className="block text-md font-semibold text-green-500">
+      Date:
+    </label>
+    <input
+      pattern="^(?!\s*$).+" title="This field cannot be empty or just spaces" value={smodel?.date || ""} required type="date" name="date" id="date" 
+      onChange={onchange}       placeholder="Enter Date"
+      className=" w-full px-4 py-2 border border-green-500 bg-green-600 bg-opacity-20 rounded-full focus:outline-none focus:ring-2 focus:ring-green-600"
+
+    />
     <label htmlFor="amount" className="block text-md font-semibold text-green-500">
       Amount:
     </label>
@@ -165,16 +174,17 @@ console.log(response)
       className=" w-full px-4 py-2 border border-green-500  bg-green-600 bg-opacity-20 rounded-full focus:outline-none focus:ring-2 focus:ring-green-600"
 
     />
-    
-    <label htmlFor="date" className="block text-md font-semibold text-green-500">
-      Date:
+
+<label htmlFor="rmrk" className="block text-md font-semibold text-green-500">
+      Remarks:
     </label>
     <input
-      pattern="^(?!\s*$).+" title="This field cannot be empty or just spaces" value={smodel?.date || ""} required type="text" name="date" id="date" 
-      onChange={onchange}       placeholder="Enter Date"
-      className=" w-full px-4 py-2 border border-green-500 bg-green-600 bg-opacity-20 rounded-full focus:outline-none focus:ring-2 focus:ring-green-600"
+      pattern="^(?!\s*$).+" title="This field cannot be empty or just spaces" value={smodel?.rmrk || ""} required type="text" name="rmrk" id="rmrk"
+      onChange={onchange}       placeholder="Enter any Remarks"
+      className=" w-full px-4 py-2 border border-green-500  bg-green-600 bg-opacity-20 rounded-full focus:outline-none focus:ring-2 focus:ring-green-600"
 
     />
+    
      {eflag? (<><button onClick={(e) => handleupdate(e)} 
       className="flex justify-center gap-2 w-full py-2 mt-4 border-2 border-green-500 bg-green-600 bg-opacity-5 text-green-500 font-semibold rounded-full hover:bg-green-700 hover:text-green-50 "
       >Update Data</button></>):

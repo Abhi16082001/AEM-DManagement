@@ -36,7 +36,17 @@ export default function Page() {
         });
       };
 
-    
+      const calamt = (p,amt) => {
+
+        const per= parseFloat(p);
+        const amnt= parseFloat(amt);
+        const a=amnt*(per/100)
+        const res=amnt +a
+        settmodel({
+          ...tmodel,pamt:res
+        });}
+
+
       const handletdetails = (td) => {
         const etd = encodeURIComponent(JSON.stringify(td));
         router.push(`/tdetails?tdtls=${etd}`);
@@ -60,6 +70,7 @@ export default function Page() {
             headers:{ 'Content-Type':'application/json'},
             body: JSON.stringify(co)
           });
+          const data= await response.json()
           if(response.ok){
             console.log("Details Updated Sucessfully ! ")
             setalert("Details Updated Successfully !!")
@@ -68,6 +79,7 @@ export default function Page() {
           }
           else{
             console.log("Error Updating Details !!")
+            setalert(data.message)
           }
         }
         catch(error){
@@ -106,21 +118,21 @@ export default function Page() {
     const addt = async (e) => {
         e.preventDefault();
         setalert("Adding Tender...");
-        const dtyp="tender"
-        const co = {  ...tmodel };
+        const co = {  ...tmodel,dtyp:"tender",pkey:"tid" };
         try {
-          const response = await fetch(`/api/alldata?dtyp=${dtyp}`, {
+          const response = await fetch("/api/alldata", {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(co),
           });
 console.log(response)
+const data= await response.json()
           if (response.ok) {
             setalert("Tender added Successfully!");
             settmodel({});
             settalert("");
           } else {
-            setalert("Error in adding Tender.");
+            setalert(data.message);
           }
         } catch (error) {
           setalert("Error in adding Tender.");
@@ -164,6 +176,16 @@ console.log(response)
 
     />
     
+    <label htmlFor="td" className="block text-md font-semibold text-green-500">
+      Tender Division :
+    </label>
+    <input
+      pattern="^(?!\s*$).+" title="This field cannot be empty or just spaces" value={tmodel?.td || ""} required type="text" name="td" id="td"
+      onChange={onchange}       placeholder="Enter Division"
+      className=" w-full px-4 py-2 border border-green-500  bg-green-600 bg-opacity-20 rounded-full focus:outline-none focus:ring-2 focus:ring-green-600"
+
+    />
+
     <label htmlFor="name" className="block text-md font-semibold text-green-500">
       Tender Name :
     </label>
@@ -174,13 +196,32 @@ console.log(response)
 
     />
 
-
-<label htmlFor="td" className="block text-md font-semibold text-green-500">
-      Tender Division :
+<label htmlFor="amount" className="block text-md font-semibold text-green-500">
+      Tender Amount :
     </label>
     <input
-      pattern="^(?!\s*$).+" title="This field cannot be empty or just spaces" value={tmodel?.td || ""} required type="text" name="td" id="td"
-      onChange={onchange}       placeholder="Enter Division"
+      pattern="^(?!\s*$).+" title="This field cannot be empty or just spaces" value={tmodel?.amount || ""} required type="text" name="amount" id="amount"
+      onChange={onchange}       placeholder="Enter amount"
+      className=" w-full px-4 py-2 border border-green-500  bg-green-600 bg-opacity-20 rounded-full focus:outline-none focus:ring-2 focus:ring-green-600"
+
+    />
+
+<label htmlFor="per" className="block text-md font-semibold text-green-500">
+      Tender submission percentage with sign :
+    </label>
+    <input
+      pattern="^(?!\s*$).+" title="This field cannot be empty or just spaces" value={tmodel?.per || ""} required type="text" name="per" id="per"
+      onChange={onchange}       placeholder="Enter percentage without symbol"
+      className=" w-full px-4 py-2 border border-green-500  bg-green-600 bg-opacity-20 rounded-full focus:outline-none focus:ring-2 focus:ring-green-600"
+
+    />
+
+<span htmlFor="pamt" className="block text-md font-semibold text-green-500"
+onClick={() => calamt(tmodel.per,tmodel.amount)}>
+       Calculate Amount after percentage:
+    </span>
+    <input
+      pattern="^(?!\s*$).+" title="This field cannot be empty or just spaces" value={tmodel?.pamt || ""} required type="text" name="pamt" id="pamt"  
       className=" w-full px-4 py-2 border border-green-500  bg-green-600 bg-opacity-20 rounded-full focus:outline-none focus:ring-2 focus:ring-green-600"
 
     />

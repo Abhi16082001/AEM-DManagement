@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { RiDeleteBin5Line } from "react-icons/ri";
 export default function Home() {
 const [eflag, seteflag] = useState(false)
+const [vhcl, setvhcl] = useState([])
 const [cntr, setcntr] = useState([])
 const [chck, setchck] = useState("")
 const [cmodel, setcmodel] = useState({})
@@ -13,6 +14,7 @@ const [calert, setcalert] = useState("Loading...")
 const [cd, setcd] = useState(null)
 const [dflag, setdflag] = useState(false)
 const [dalert, setdalert] = useState("")
+const [stf, setstf] = useState([])
 
 const fetchc = async () => {
   const response = await fetch(`/api/cdetails?cid=${encodeURIComponent(cd.cid)}`);
@@ -27,13 +29,44 @@ useEffect(() => {
   if(cd){ fetchc();}
 },[cmodel,cd]);
 
-    
+  
+const fetchs = async () => {
+  const response = await fetch("/api/alldata?dtyp=staff");
+  let sjson = await response.json();
+  setstf(sjson.result);
+};
+
+useEffect(() => {
+   fetchs();
+},[]);
+
+
+
+const fetchv = async () => {
+  const response = await fetch("/api/alldata?dtyp=vehicle");
+  let vjson = await response.json();
+  setvhcl(vjson.result);
+};
+
+useEffect(() => {
+   fetchv();
+},[]);
       const onchange = (e) => {
         setcmodel({
           ...cmodel,cid:cd.cid,
           [e.target.name]: e.target.value,
         });
       };
+
+      const calrht = (mul,rte) => {
+
+        const rate= parseFloat(rte);
+        const mulpr= parseFloat(mul);
+        const tot=rate*mulpr
+        setcmodel({
+          ...cmodel,odtot:tot
+        });}
+
 
       const handledel = async (mid) => {
         setdalert(`Deleting Data ...`)
@@ -150,25 +183,131 @@ console.log(response)
  
 <div>Add Details: </div>
 <form onSubmit={addcntr} className="space-y-4">
-    <label htmlFor="rate" className="block text-md font-semibold text-green-500">
+
+<label htmlFor="date" className="block text-md font-semibold text-green-500">
+      Date:
+    </label>
+    <input
+      pattern="^(?!\s*$).+" title="This field cannot be empty or just spaces" value={cmodel?.date || ""} required type="date" name="date" id="date"
+      onChange={onchange}       placeholder="Enter date"
+      className=" w-full px-4 py-2 border border-green-500  bg-green-600 bg-opacity-20 rounded-full focus:outline-none focus:ring-2 focus:ring-green-600"
+
+    />
+
+<label htmlFor="date" className="block text-md font-semibold text-green-500">
+    Shift:
+    </label>
+  <select  onChange={onchange}  name="shft" id="shft" value={cmodel?.shft || ""}
+       className="flex justify-center gap-2 w-full py-2 mt-4 border-2 border-green-500 bg-green-600 bg-opacity-5 text-green-500 font-semibold rounded-full hover:bg-green-700 hover:text-green-50 "
+       >
+        <option value="">Select Shift</option>
+  <option value="Day">Day</option>
+  <option value="Night">Night</option>
+</select>
+
+<label htmlFor="vno" className="block text-md font-semibold text-green-500">
+    Vehicle:
+    </label>
+<select  onChange={onchange}  name="vno" id="vno" value={cmodel?.vno || ""}
+       className="flex justify-center gap-2 w-full py-2 mt-4 border-2 border-green-500 bg-green-600 bg-opacity-5 text-green-500 font-semibold rounded-full hover:bg-green-700 hover:text-green-50 "
+       >
+        <option value="">Select the Vehicle</option>
+{vhcl.map((b) => (
+    
+    <option key={b.vno} value={`${b.vtype}:${b.vno}`}
+       className='space-y-2 sm:space-y-3 xs:flex justify-between text-teal-950 text-lg font-semibold bg-gradient-to-r from-cyan-400 to-green-300 rounded-md p-4 shadow-lg hover:cursor-pointer hover:opacity-80 container mx-auto'
+       >{b.vtype} : {b.vno}
+   </option>
+  ))}
+</select>
+ 
+    
+<label htmlFor="sid" className="block text-md font-semibold text-green-500">
+    Driver/Operator Name:
+    </label>
+<select  onChange={onchange}  name="sid" id="sid" value={cmodel?.sid || ""}
+       className="flex justify-center gap-2 w-full py-2 mt-4 border-2 border-green-500 bg-green-600 bg-opacity-5 text-green-500 font-semibold rounded-full hover:bg-green-700 hover:text-green-50 "
+       >
+        <option value="">Select who drove Vehicle</option>
+{stf.map((b) => (
+    
+    <option key={b.sid} value={`${b.sid}:${b.name}`}
+       className='space-y-2 sm:space-y-3 xs:flex justify-between text-teal-950 text-lg font-semibold bg-gradient-to-r from-cyan-400 to-green-300 rounded-md p-4 shadow-lg hover:cursor-pointer hover:opacity-80 container mx-auto'
+       >{b.srole} : {b.name}
+   </option>
+  ))}
+</select> 
+
+
+<label htmlFor="site" className="block text-md font-semibold text-green-500">
+      Site Address:
+    </label>
+    <input
+      pattern="^(?!\s*$).+" title="This field cannot be empty or just spaces" value={cmodel?.site || ""} required type="text" name="site" id="site"
+      onChange={onchange}       placeholder="Enter Site address"
+      className=" w-full px-4 py-2 border border-green-500  bg-green-600 bg-opacity-20 rounded-full focus:outline-none focus:ring-2 focus:ring-green-600"
+
+    />
+
+
+<label htmlFor="rate" className="block text-md font-semibold text-green-500">
       Rate:
     </label>
     <input
       pattern="^(?!\s*$).+" title="This field cannot be empty or just spaces" value={cmodel?.rate || ""} required type="text" name="rate" id="rate"
-      onChange={onchange}       placeholder="Enter rate"
+      onChange={onchange}       placeholder="Enter Rate"
       className=" w-full px-4 py-2 border border-green-500  bg-green-600 bg-opacity-20 rounded-full focus:outline-none focus:ring-2 focus:ring-green-600"
 
     />
-    
-    <label htmlFor="trip" className="block text-md font-semibold text-green-500">
+
+{ (typeof (cmodel?.vno) === "string" && cmodel.vno.match(/^Hyva/))?  (<><label htmlFor="trip" className="block text-md font-semibold text-green-500">
       No. of Trips:
     </label>
     <input
-      pattern="^(?!\s*$).+" title="This field cannot be empty or just spaces" value={cmodel?.trip || ""} required type="text" name="trip" id="trip" 
+      pattern="^(?!\s*$).+" title="This field cannot be empty or just spaces" value={cmodel?.trip || ""} required type="text" name="trip" id="trip"
       onChange={onchange}       placeholder="Enter trip"
-      className=" w-full px-4 py-2 border border-green-500 bg-green-600 bg-opacity-20 rounded-full focus:outline-none focus:ring-2 focus:ring-green-600"
+      className=" w-full px-4 py-2 border border-green-500  bg-green-600 bg-opacity-20 rounded-full focus:outline-none focus:ring-2 focus:ring-green-600"
+    />
+    
+    <span htmlFor="odtot" className="block text-md font-semibold text-green-500"
+      onClick={() => calrht(cmodel.trip,cmodel.rate)}>
+     Calculate Rate * Trips:
+    </span>
+    <input
+      pattern="^(?!\s*$).+" title="This field cannot be empty or just spaces" value={cmodel?.odtot || ""} required type="text" name="odtot" id="odtot"
+      className=" w-full px-4 py-2 border border-green-500  bg-green-600 bg-opacity-20 rounded-full focus:outline-none focus:ring-2 focus:ring-green-600"
+    />
+    
+    </>):   (<><label htmlFor="hrs" className="block text-md font-semibold text-green-500">
+      No. of Hours:
+    </label>
+    <input
+      pattern="^(?!\s*$).+" title="This field cannot be empty or just spaces" value={cmodel?.hrs || ""} required type="text" name="hrs" id="hrs"
+      onChange={onchange}       placeholder="Enter hours"
+      className=" w-full px-4 py-2 border border-green-500  bg-green-600 bg-opacity-20 rounded-full focus:outline-none focus:ring-2 focus:ring-green-600"
+    />
+    <span htmlFor="odtot" className="block text-md font-semibold text-green-500"
+      onClick={() => calrht(cmodel.hrs,cmodel.rate)}>
+     Calculate Rate * Hours:
+    </span>
+    <input
+      pattern="^(?!\s*$).+" title="This field cannot be empty or just spaces" value={cmodel?.odtot || ""} required type="text" name="odtot" id="odtot"
+      className=" w-full px-4 py-2 border border-green-500  bg-green-600 bg-opacity-20 rounded-full focus:outline-none focus:ring-2 focus:ring-green-600"
+    />
+    
+    </>)}
+
+
+<label htmlFor="rmrk" className="block text-md font-semibold text-green-500">
+      Remarks:
+    </label>
+    <input
+      pattern="^(?!\s*$).+" title="This field cannot be empty or just spaces" value={cmodel?.rmrk || ""} required type="text" name="rmrk" id="rmrk"
+      onChange={onchange}       placeholder="Enter any Remarks"
+      className=" w-full px-4 py-2 border border-green-500  bg-green-600 bg-opacity-20 rounded-full focus:outline-none focus:ring-2 focus:ring-green-600"
 
     />
+
     {eflag? (<><button onClick={(e) => handleupdate(e)} 
       className="flex justify-center gap-2 w-full py-2 mt-4 border-2 border-green-500 bg-green-600 bg-opacity-5 text-green-500 font-semibold rounded-full hover:bg-green-700 hover:text-green-50 "
       >Update Data</button></>):

@@ -97,6 +97,9 @@ export default function Page() {
             headers:{ 'Content-Type':'application/json'},
             body: JSON.stringify(co)
           });
+          console.log(response)
+          const data= await response.json()
+          console.log(data)
           if(response.ok){
             console.log("Details Updated Sucessfully ! ")
             setalert("Details Updated Successfully !!")
@@ -104,7 +107,8 @@ export default function Page() {
            setsmodel({})
           }
           else{
-            console.log("Error Updating Details !!")
+            console.log(data.message)
+            setalert(data.message)
           }
         }
         catch(error){
@@ -117,21 +121,22 @@ export default function Page() {
     const adds = async (e) => {
         e.preventDefault();
         setalert("Adding Staff...");
-        const dtyp="staff"
-        const co = {  ...smodel };
+        const co = {  ...smodel,dtyp:"staff",pkey:"sid" };
         try {
-          const response = await fetch(`/api/alldata?dtyp=${dtyp}`, {
+          const response = await fetch("/api/alldata", {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(co),
           });
 console.log(response)
+const data= await response.json()
+console.log(data)
           if (response.ok) {
             setalert("Staff added Successfully!");
             setsmodel({});
             setsalert("");
           } else {
-            setalert("Error in adding Staff.");
+            setalert(data.message);
           }
         } catch (error) {
           setalert("Error in adding Staff.");

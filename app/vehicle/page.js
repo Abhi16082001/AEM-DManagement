@@ -14,11 +14,12 @@ export default function Page() {
     const [alert, setalert] = useState("")
     const [vhcl, setvhcl] = useState([])
     const [valert, setvalert] = useState("")
-
+ 
 
     const fetchv = async () => {
         const response = await fetch("/api/alldata?dtyp=vehicle");
         let vjson = await response.json();
+        console.log(vjson)
         if (vjson.result.length === 0) setvalert("No Vehicle Added");
         setvalert("");
         setvhcl(vjson.result);
@@ -36,6 +37,7 @@ export default function Page() {
           [e.target.name]: e.target.value,
         });
       };
+
 
       const cvhcl = (e) => {
         setvalert("Loading...")
@@ -67,6 +69,7 @@ export default function Page() {
             headers:{ 'Content-Type':'application/json'},
             body: JSON.stringify(co)
           });
+          const data= await response.json()
           if(response.ok){
             console.log("Details Updated Sucessfully ! ")
             setalert("Details Updated Successfully !!")
@@ -75,6 +78,7 @@ export default function Page() {
           }
           else{
             console.log("Error Updating Details !!")
+            setalert(data.message)
           }
         }
         catch(error){
@@ -114,20 +118,20 @@ export default function Page() {
     const addv = async (e) => {
         e.preventDefault();
         setalert("Adding Vehicle...");
-        const dtyp="vehicle"
-        const co = {  ...vmodel };
+        const co = {  ...vmodel,dtyp:"vehicle",pkey:"vno" };
         try {
-          const response = await fetch(`/api/alldata?dtyp=${dtyp}`, {
+          const response = await fetch("/api/alldata", {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(co),
           });
 console.log(response)
+const data= await response.json()
           if (response.ok) {
             setalert("Vehicle added Successfully!");
             setvmodel({});
           } else {
-            setalert("Error in adding Vehicle.");
+            setalert(data.message);
           }
         } catch (error) {
           setalert("Error in adding Vehicle.");

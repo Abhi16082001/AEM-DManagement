@@ -30,6 +30,7 @@ export async function GET(request) {
     // Replace the uri string with your connection string.
     
     let vhc= await request.json()
+  
     const client = await getClient();
       try {
         const database = client.db('AnilEarthMover');

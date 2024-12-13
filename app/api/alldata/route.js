@@ -18,7 +18,6 @@ export async function GET(request) {
       const nstf = await collection.findOne(query);
 
   const result=nstf.details
-  console.log(result)
       return NextResponse.json({success:true,result})
     } finally {
       // Ensures that the client will close when you finish/error
@@ -32,12 +31,22 @@ export async function GET(request) {
     // Replace the uri string with your connection string.
     
     let dtls= await request.json()
-    const { searchParams } = new URL(request.url);
-    const dtyp = searchParams.get('dtyp');
+    const pkey=dtls.pkey
+    const dtyp=dtls.dtyp
+    delete dtls.pkey;
+    delete dtls.dtyp; 
     const client = await getClient();
       try {
         const database = client.db('AnilEarthMover');
         const collection = database.collection('alldata');
+
+        const fil = { dtype: dtyp, [`details.${pkey}`]: dtls[pkey] };
+
+        const val = await collection.findOne(fil);
+        if(val){
+          return NextResponse.json({ ok: false, message: `This ${dtyp} ID already exists !!` }, { status: 404 });
+        }
+
 
         const filter = { dtype: dtyp }; // Find the document with dtype "staff"
         const update = { $push: { details: dtls } }; // Push to details array
@@ -46,7 +55,7 @@ export async function GET(request) {
         if (result.matchedCount === 0) {
             return NextResponse.json({ ok: false, message: "Document not found" }, { status: 404 });
         }
-        return NextResponse.json({ ok: true, message: "Details updated successfully", result });
+        return NextResponse.json({ ok: true, message: `${dtyp} Details Added successfully`, result });
    
       } finally {
         // Ensures that the client will close when you finish/error
@@ -72,6 +81,14 @@ export async function GET(request) {
           const database = client.db('AnilEarthMover');
           const collection = database.collection('alldata');
          
+          if(okey!=dtls[pkey]){
+            const fil = { dtype: dtpe, [`details.${pkey}`]: dtls[pkey] };
+
+            const val = await collection.findOne(fil);
+            if(val){
+              return NextResponse.json({ ok: false, message: `This ${dtpe} ID already exists !!` }, { status: 404 });
+            }
+          }
           const filter = { dtype: dtpe}; // Find the document with dtype "staff"
           // const update = { $push: { details: dtls } }; // Push to details array
   
