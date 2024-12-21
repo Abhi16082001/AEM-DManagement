@@ -15,7 +15,8 @@ export async function GET(request) {
       // Query for a movie that has the title 'Back to the Future'
       // const query = { title: 'Back to the Future' };
       const query = { vno:vn };
-      const av = await vhcl.find(query).toArray();
+      const nsa = await vhcl.find(query).toArray();
+      const  av= nsa.sort((a, b) => new Date(b.date) - new Date(a.date));
   console.log(av)
       return NextResponse.json({success:true,av})
     } finally {

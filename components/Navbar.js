@@ -13,10 +13,7 @@ const Navbar = () => {
        <span className='text-purple-700 font-bold'>Mover</span>
        </div>
        <BsFillBuildingsFill size={30} />
-      <Link  href="/menu" className=' flex justify-center gap-1 font-semibold text-purple-900 bg-purple-200 p-2 rounded-md hover:cursor-pointer hover:bg-purple-300'>
       
-        Menu
-      </Link>
 
       <Link  href="/" className=' flex justify-center gap-1 font-semibold text-purple-900 bg-purple-200 p-2 rounded-md hover:cursor-pointer hover:bg-purple-300'>
       <TbLogout2 size={25} />

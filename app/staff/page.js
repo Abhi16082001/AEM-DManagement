@@ -2,9 +2,12 @@
 import { useRouter } from 'next/navigation';
 import { useState ,useEffect} from "react"
 import { TbEditCircle } from "react-icons/tb";
+import { MdDeleteForever } from "react-icons/md";
+import { RiEditCircleFill } from "react-icons/ri";
 import { RiDeleteBin5Line } from "react-icons/ri";
 export default function Page() {
   const router = useRouter();
+  const [uflag, setuflag] = useState("")
   const [dflag, setdflag] = useState(false)
   const [chck, setchck] = useState("")
   const [dalert, setdalert] = useState("")
@@ -20,14 +23,15 @@ export default function Page() {
         const response = await fetch("/api/alldata?dtyp=staff");
         let sjson = await response.json();
         if (sjson.result.length === 0) setsalert("No Staff Added");
-        setsalert("");
+        setuflag("");
+        setsalert("")
         setstf(sjson.result);
         console.log(stf)
       };
     
       useEffect(() => {
          fetchs();
-      },[srle,smodel]);
+      },[srle,uflag]);
 
 
     const onchange = (e) => {
@@ -48,8 +52,11 @@ export default function Page() {
       };
       
       const deletes = async (bul,id) => {
-        setdflag(bul);
-        setchck(id);
+        setdalert("")
+            setsalert("")
+            setalert("")
+        setdflag(bul)
+        setchck(id)
       }
 
       const handledel = async (id) => {
@@ -76,16 +83,30 @@ export default function Page() {
             console.log(data.message); // Log success message
             setdalert(` Data deleted successfully.`)
             setsmodel({})
+            setalert("")
+            setsalert("")
+            setuflag("del")
         } catch (erro) {
             console.log('Error:', erro);
         }
       };
 
       const handledit = async (dtls) => {
-        seteflag(true);
+        setdalert("")
+            setsalert("")
+            setalert("")
+        seteflag(true)
         setsmodel({...dtls,okey:dtls.sid})
       }
  
+      const handleditf = async () => {
+        setsalert("")
+        setalert("")
+        setdalert("")
+        seteflag(false)
+        setsmodel({})
+      }
+
 
       const handleupdate = async (e) => {
         setalert("Updating Details...")
@@ -103,7 +124,10 @@ export default function Page() {
           if(response.ok){
             console.log("Details Updated Sucessfully ! ")
             setalert("Details Updated Successfully !!")
-            seteflag(false);
+            seteflag(false)
+            setdalert("")
+            setuflag("upd")
+            setsalert("")
            setsmodel({})
           }
           else{
@@ -133,8 +157,11 @@ const data= await response.json()
 console.log(data)
           if (response.ok) {
             setalert("Staff added Successfully!");
-            setsmodel({});
-            setsalert("");
+            setsmodel({})
+            setuflag("add")
+            setsalert("")
+            setdalert("")
+            
           } else {
             setalert(data.message);
           }
@@ -146,39 +173,46 @@ console.log(data)
 
  return (
   <>
-  Menu for Staff  !!
-  <select onChange={cstf} name="srole" id="srole">
+  <div className="flex-col justify-items-center space-y-2 p-1 ">
+  <div className="bg-gradient-to-r from-indigo-400 to-purple-300  w-11/12 lg:w-4/5  text-sm lg:text-lg flex flex-col sm:flex-row sm:justify-center sm:gap-8  font-serif font-semibold  p-2  rounded-md">
+  <p className='text-center'>Menu for Staff  !! </p>
+  <select className='rounded-full sm:p-1 p-2 bg-purple-500' onChange={cstf} name="srole" id="srole">
     <option value="">Choose Staff type</option>
   <option value="Driver">Driver</option>
   <option value="Operator">Operator</option>
   <option value="Helper">Helper</option>
   <option value="All">All</option>
 </select>
+
+</div>
+<div className="container h-[75vh] bg-blue-500 p-2 rounded-lg bg-opacity-20 w-11/12 lg:w-4/5 space-y-2 overflow-y-scroll">
 {salert && (
     <div className="text-center mt-4 text-green-200 font-semibold">
       {salert}
     </div>
   )}
-
-<div>
   {stf.map((b) => (
     
         <div key={b.sid}>
              
            {(b.srole===srle || srle==="All")?(<><div
-           className='space-y-2 sm:space-y-3 xs:flex justify-between text-teal-950 text-lg font-semibold bg-gradient-to-r from-cyan-400 to-green-300 rounded-md p-4 shadow-lg hover:cursor-pointer hover:opacity-80 container mx-auto'
-           ><span  onClick={() => handlesdetails(b)} >{b.sid} : {b.name}</span>
-       <div className="  flex justify-center gap-20  xs:justify-between xs:gap-8">   <button className= "   hover:bg-green-700 bg-green-200   p-2 rounded-full" onClick={() => handledit(b)}><TbEditCircle className="text-green-700 hover:text-green-200"  size={30}  /></button>
-       { (dflag && chck===b.sid)? (<><button onClick={() => handledel(b.sid)} className="bg-red-500">Yes</button > <button onClick={() => deletes(false,b.sid)} className="bg-green-500">No</button></>):(<><button className="hover:bg-red-700 bg-red-200     p-2 rounded-full " onClick={() => deletes(true,b.sid)}><RiDeleteBin5Line className="text-red-700 hover:text-red-200"  size={30} /></button></>)}
+           className='space-y-2 sm:space-x-2 sm:space-y-3 flex flex-col sm:flex-row sm:justify-between text-teal-950 text-lg font-semibold bg-gradient-to-r from-cyan-400 to-green-300 rounded-md p-4  shadow-lg  container mx-auto'
+           >
+            <div onClick={() => handlesdetails(b)} className='bg-red-200 hover:cursor-pointer hover:opacity-80 rounded-md py-2 px-5 w-full flex flex-col sm:flex-row sm:space-x-3'>
+            <span className='sm:border-teal-950 sm:border-b-0 border-b-2 sm:border-r-2 sm:px-4'  >{b.sid} </span><span className=''> {b.name}</span></div>
+       <div className="  flex flex-row sm:gap-8  justify-evenly">   <button className= "   hover:bg-green-700 bg-green-200   p-2 rounded-full" onClick={() => handledit(b)}><RiEditCircleFill  className="text-green-700 hover:text-green-200"  size={30}  /></button>
+       { (dflag && chck===b.sid)? (<><button onClick={() => handledel(b.sid)} className="bg-red-500 rounded-full md:px-4 px-2 text-red-200 hover:bg-opacity-80 hover:text-red-100">Yes</button > <button onClick={() => deletes(false,b.sid)} className="bg-green-500 rounded-full md:px-4  text-green-200 px-2 hover:bg-opacity-80 hover:text-green-100">No</button></>):(<><button className="hover:bg-red-700 bg-red-200     p-2 rounded-full " onClick={() => deletes(true,b.sid)}><MdDeleteForever  className="text-red-700 hover:text-red-200"  size={30} /></button></>)}
           </div> </div></>):"" }</div>
-      ))}</div>
+      ))}
 {dalert && (
     <div className="text-center mt-4 text-red-300 font-semibold">
       {dalert}
     </div>
   )}
-
+</div>
+<div className=" border-2 p-2 border-indigo-500 rounded-md w-full sm:w-4/5">
 <form onSubmit={adds} className="space-y-4">
+<div className="text-center text-sm lg:text-lg font-semibold font-mono bg-indigo-500 bg-opacity-50 p-2 rounded-lg  ">Add Details: </div>
     <label htmlFor="sid" className="block text-md font-semibold text-green-500">
       Staff user ID :
     </label>
@@ -202,16 +236,20 @@ console.log(data)
     <select  onChange={onchange}  name="srole" id="srole" value={smodel?.srole || ""}
        className="flex justify-center gap-2 w-full py-2 mt-4 border-2 border-green-500 bg-green-600 bg-opacity-5 text-green-500 font-semibold rounded-full hover:bg-green-700 hover:text-green-50 "
        >
-        <option value="">Select the Staff Type</option>
+        <option value="">Select the Staff Type:</option>
   <option value="Driver">Driver</option>
   <option value="Operator">Operator</option>
   <option value="Helper">Helper</option>
 </select>
 {eflag? (<><button onClick={(e) => handleupdate(e)} 
       className="flex justify-center gap-2 w-full py-2 mt-4 border-2 border-green-500 bg-green-600 bg-opacity-5 text-green-500 font-semibold rounded-full hover:bg-green-700 hover:text-green-50 "
-      >Update Staff</button></>):
+      >Update Staff</button>
+       <button onClick={(e) => handleditf()} 
+      className="flex justify-center gap-2 w-full py-2 mt-4 border-2 border-indigo-500 bg-indigo-600 bg-opacity-50 text-indigo-50 font-semibold rounded-full  hover:bg-indigo-700 hover:text-indigo-50 "
+      >Cancel</button>
+      
+      </>):
     (<><button
-      type="submit"
       className="flex justify-center gap-2 w-full py-2 mt-4 border-2 border-green-500 bg-green-600 bg-opacity-5 text-green-500 font-semibold rounded-full hover:bg-green-700 hover:text-green-50 "
     >
       Add Staff
@@ -222,6 +260,8 @@ console.log(data)
       {alert}
     </div>
   )}
+  </div>
+  </div>
   </>
  )
 }

@@ -9,8 +9,13 @@ const [alls, setalls] = useState([])
 const [allv, setallv] = useState([])
 const [allc, setallc] = useState([])
 const [allt, setallt] = useState([])
+const [alrt, setalrt] = useState("")
 const [dmodel, setdmodel] = useState({})
 const [alert, setalert] = useState("");
+const [valert, setvalert] = useState("");
+const [talert, settalert] = useState("");
+const [calert, setcalert] = useState("");
+const [salert, setsalert] = useState("");
 
  
 const onchange = (e) => {
@@ -22,7 +27,7 @@ const onchange = (e) => {
 
 const fetchall = async (e) => {
   e.preventDefault(); 
-    setalert("Loading...");
+    setalrt("Loading...");
     const co = { ...dmodel };
     try {
       const response = await fetch(`/api/daily?dmodel=${encodeURIComponent(JSON.stringify(co))}`,{
@@ -32,14 +37,38 @@ const data= await response.json()
       if (data.success) {
         const fc = data.fc
         const ft = data.ft
-        const fv = data.fv
+        const fv = data.fv 
         const fs = data.fs
+        setsalert("")
+        settalert("")
+        setvalert("")
+        setcalert("")
         setalld([...fc,...ft,...fv,...fs])
-        setallc([...fc])
-        setallv([...fv])
-        setallt([...ft])
-        setalls([...fs])
-        setalert("");
+        setallc(fc)
+        setallv(fv)
+        setallt(ft)
+        setalls(fs)
+        if(fc.length==0 && fs.length==0 && fv.length==0 && ft.length==0)
+        {setalert("NO DETAILS TO SHOW !!")
+          console.log(alld)
+        }
+        if(fs.length==0)
+          {setsalert("NO STAFF DETAILS TO SHOW !!")
+            console.log(fs)
+          }
+          if(fv.length==0)
+            {setvalert("NO VEHICLE DETAILS TO SHOW !!")
+              console.log(fv)
+            }
+            if(fc.length==0)
+              {setcalert("NO CONTRACTOR DETAILS TO SHOW !!")
+                console.log(fc)
+              }
+              if(ft.length==0)
+                {settalert("NO TENDER DETAILS TO SHOW !!")
+                  console.log(ft)
+                }
+        setalrt("")
       } else {
         setalert("Error in Fetching Details.");
       }
@@ -83,35 +112,71 @@ Daily Summary !!
         <div key={b._id}
             className='space-y-2 sm:space-y-3 xs:flex justify-between text-teal-950 text-lg font-semibold bg-gradient-to-r from-cyan-400 to-green-300 rounded-md p-4 shadow-lg hover:cursor-pointer hover:opacity-80 container mx-auto'>      
            <span  className="inline-block w-full sm:w-3/5"> {b.date} -- {b.rmrk} </span>  
+         
        </div>
-      ))}</>):""}
+      ))}
+        {alert && (
+    <div className="text-center mt-4 text-green-200 font-semibold">
+      {alert}
+    </div>
+  )}
+      </>):""}
 {(dmodel?.dtype==="staff")?(<> {alls.map((b) => (
         <div key={b._id}
             className='space-y-2 sm:space-y-3 xs:flex justify-between text-teal-950 text-lg font-semibold bg-gradient-to-r from-cyan-400 to-green-300 rounded-md p-4 shadow-lg hover:cursor-pointer hover:opacity-80 container mx-auto'>      
            <span  className="inline-block w-full sm:w-3/5"> {b.date} -- {b.rmrk} </span>  
+      
        </div>
-      ))}</>):""}
+      ))}
+           {salert && (
+    <div className="text-center mt-4 text-green-200 font-semibold">
+      {salert}
+    </div>
+  )}
+      </>):""}
 {(dmodel?.dtype==="vehicle")?(<> {allv.map((b) => (
         <div key={b._id}
             className='space-y-2 sm:space-y-3 xs:flex justify-between text-teal-950 text-lg font-semibold bg-gradient-to-r from-cyan-400 to-green-300 rounded-md p-4 shadow-lg hover:cursor-pointer hover:opacity-80 container mx-auto'>      
            <span  className="inline-block w-full sm:w-3/5"> {b.date} -- {b.rmrk} </span>  
+      
        </div>
-      ))}</>):""}
+      ))}
+           {valert && (
+    <div className="text-center mt-4 text-green-200 font-semibold">
+      {valert}
+    </div>
+  )}
+      </>):""}
 {(dmodel?.dtype==="contractor")?(<> {allc.map((b) => (
         <div key={b._id}
             className='space-y-2 sm:space-y-3 xs:flex justify-between text-teal-950 text-lg font-semibold bg-gradient-to-r from-cyan-400 to-green-300 rounded-md p-4 shadow-lg hover:cursor-pointer hover:opacity-80 container mx-auto'>      
            <span  className="inline-block w-full sm:w-3/5"> {b.date} -- {b.rmrk} </span>  
+       
        </div>
-      ))}</>):""}
+      ))}
+          {calert && (
+    <div className="text-center mt-4 text-green-200 font-semibold">
+      {calert}
+    </div>
+  )}
+      </>):""}
 {(dmodel?.dtype==="tender")?(<> {allt.map((b) => (
         <div key={b._id}
             className='space-y-2 sm:space-y-3 xs:flex justify-between text-teal-950 text-lg font-semibold bg-gradient-to-r from-cyan-400 to-green-300 rounded-md p-4 shadow-lg hover:cursor-pointer hover:opacity-80 container mx-auto'>      
            <span  className="inline-block w-full sm:w-3/5"> {b.date} -- {b.rmrk} </span>  
+        
        </div>
-      ))}</>):""}
-  {alert && (
+      ))}
+         {talert && (
     <div className="text-center mt-4 text-green-200 font-semibold">
-      {alert}
+      {talert}
+    </div>
+  )}
+      </>):""}
+
+{alrt && (
+    <div className="text-center mt-4 text-green-200 font-semibold">
+      {alrt}
     </div>
   )}
 

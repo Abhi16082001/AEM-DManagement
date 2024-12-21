@@ -1,10 +1,14 @@
 "use client"
-import { useState, useEffect,Suspense } from "react";
+import { useState, useEffect,Suspense,useRef } from "react";
 import { TbEditCircle } from "react-icons/tb";
 import { useSearchParams } from "next/navigation";
 import { RiDeleteBin5Line } from "react-icons/ri";
 export default function Page() {
+  const cardRefs = useRef([]);
+  const [selectedId, setSelectedId] = useState(null);
   const [eflag, seteflag] = useState(false)
+  const [sflag, setsflag] = useState(false)
+const [uflag, setuflag] = useState("")
 const [tndr, settndr] = useState([])
 const [vhcl, setvhcl] = useState([])
 const [chck, setchck] = useState("")
@@ -27,7 +31,7 @@ const fetcht = async () => {
 
 useEffect(() => {
   if(td){ fetcht();}
-},[tmodel,td]);
+},[uflag,td]);
 
 
 const fetchs = async () => {
@@ -57,6 +61,54 @@ useEffect(() => {
         });
       };
 
+      const handleditf = async (bul,dtls) => {
+        setuflag("")
+        settalert("")
+        setalert("")
+        setdalert("")
+        setsflag(false)
+        seteflag(bul)
+        settmodel(dtls)
+      }
+
+      const handlsrch = async (e) => {
+        e.preventDefault(); 
+          setalert("Searching...");
+          const co = { ...tmodel, dtype:"tender" };
+          try {
+            const response = await fetch(`/api/search?model=${encodeURIComponent(JSON.stringify(co))}`,{
+              method: 'GET',
+            });
+      const data= await response.json()
+            if (data.success) {
+           settndr(data.sr)
+           if(data.sr.length==0){settalert("No Matches Found !!")
+            setSelectedId(null)
+           }
+              setalert("Search Successful !")
+            } else {
+              setalert("No such Record !!");
+            }
+          } catch (error) {
+            setalert("Error in Searching !!");
+            console.error('Error:', error);
+          }
+        };
+
+      const handlsflag = async (bul) => {
+        setuflag("")
+        settalert("")
+        setalert("")
+        setdalert("")
+        seteflag(false)
+        setsflag(bul)
+        settmodel({})
+        if(!bul){
+          setuflag("srch")
+          settalert("Loading...")
+        }
+      }
+
       const handleupdate = async (e) => {
         setalert("Updating Details...")
         e.preventDefault();
@@ -70,8 +122,11 @@ useEffect(() => {
           if(response.ok){
             console.log("Details Updated Sucessfully ! ")
             setalert("Details Updated Successfully !!")
-            seteflag(false);
+            seteflag(false)
            settmodel({})
+           setuflag("upd")
+           settalert("")
+           setdalert("")
           }
           else{
             console.log("Error Updating Details !!")
@@ -102,9 +157,11 @@ useEffect(() => {
                 throw new Error(data.message || 'Failed to delete the Data');
             }
       
-            console.log(data.message); // Log success message
+            console.log(data.message) // Log success message
             setdalert(` Data deleted successfully.`)
-            settmodel({})
+            setuflag("del")
+            settalert("")
+            setalert("")
         } catch (erro) {
             console.log('Error:', erro);
         }
@@ -116,19 +173,22 @@ useEffect(() => {
         const mulpr= parseFloat(mul);
         const tot=rate*mulpr
         settmodel({
-          ...tmodel,odtot:tot
+          ...tmodel,odtot:tot.toString()
         });}
 
       const deletet = async (bul,id) => {
-        setdflag(bul);setchck(id);
+        setuflag("")
+        settalert("")
+        setalert("")
+        setdalert("")
+        setdflag(bul)
+        setchck(id)
       }
-      const handledit = async (dtls) => {
-        seteflag(true);
-        settmodel(dtls)
-      }
+     
       const addtndr = async (e) => {
         e.preventDefault();
-        setalert("Adding details...");
+        setalert("Adding details...")
+        setuflag("")
         const co = {  ...tmodel };
         try {
           const response = await fetch('/api/tdetails', {
@@ -138,9 +198,11 @@ useEffect(() => {
           });
 console.log(response)
           if (response.ok) {
-            setalert("Details added Successfully!");
-            settmodel({});
-            settalert("");
+            setalert("Details added Successfully!")
+            settmodel({})
+            settalert("")
+            setuflag("add")
+            setdalert("")
           } else {
             setalert("Error in adding Details.");
           }
@@ -156,17 +218,48 @@ console.log(response)
         <LoadParams setDbobj={settd} />
 
       </Suspense>
-  All details of {td?(<>{td.tid}:{td.name} of {td.td}</>):"Loading..."} are here !!
+      <div className="flex-col justify-items-center space-y-2 p-1 ">
 
-  <div>
-  {tndr.map((b) => (
-        <div key={b._id}
-            className='space-y-2 sm:space-y-3 xs:flex justify-between text-teal-950 text-lg font-semibold bg-gradient-to-r from-cyan-400 to-green-300 rounded-md p-4 shadow-lg hover:cursor-pointer hover:opacity-80 container mx-auto'>      
-           <span  className="inline-block w-full sm:w-3/5">{b.odtot} -- {b.date} </span>  
-       <div className="  flex justify-center gap-20  xs:justify-between xs:gap-8">   <button className= "   hover:bg-green-700 bg-green-200   p-2 rounded-full" onClick={() => handledit(b)}><TbEditCircle className="text-green-700 hover:text-green-200"  size={30}  /></button>
-       { (dflag && chck===b._id)? (<><button onClick={() => handledel(b._id)} className="bg-red-500">Yes</button > <button onClick={() => deletet(false,b._id)} className="bg-green-500">No</button></>):(<><button className="hover:bg-red-700 bg-red-200     p-2 rounded-full " onClick={() => deletet(true,b._id)}><RiDeleteBin5Line className="text-red-700 hover:text-red-200"  size={30} /></button></>)}
-          </div> </div>
-      ))}</div>
+      <div>
+  <button onClick={() => handlsflag(true)}>search</button>
+ </div>
+
+      <div className="bg-gradient-to-r from-indigo-400 to-purple-300 w-11/12 lg:w-4/5  text-sm lg:text-lg flex flex-col   font-serif font-semibold  p-2  rounded-md">
+     <div className="bg-gradient-to-r from-indigo-400 to-purple-300   text-sm lg:text-lg flex flex-col md:flex-row md:justify-between  font-serif font-semibold  p-2  rounded-md"> <p> Tender ID: {td?(<>{td.tid} </>):"Loading..."} </p>
+ <p>Tender Name: {td?(<>{td.name} </>):"Loading..."} </p>
+ <p>Tender Division: {td?(<>{td.td} </>):"Loading..."} </p></div>
+ <div className="bg-gradient-to-r from-indigo-400 to-purple-300  text-sm lg:text-lg flex flex-col md:flex-row md:justify-between  font-serif font-semibold  p-2  rounded-md"> <p> Tender Amount: {td?(<>{td.amount} </>):"Loading..."} </p>
+ <p>Bid %age: {td?(<>{td.per} </>):"Loading..."} </p>
+ <p>Bid Amount: {td?(<>{td.pamt} </>):"Loading..."} </p></div>
+ </div>
+  <div className="container h-[75vh] bg-blue-500 p-2 rounded-lg bg-opacity-20 w-11/12 lg:w-4/5 space-y-2 overflow-y-scroll">
+
+
+
+
+  {tndr.map((b,index) => (
+<div key={b._id} ref={(el) => (cardRefs.current[index] = el)} className= {`  transition ${
+              selectedId === b._id
+                ? 'bg-green-100 border-green-500'
+                : ''
+            }  flex flex-col space-y-1  lg:space-y-2  text-sm lg:text-lg  bg-cyan-700 rounded-lg p-1 text-teal-200 font-mono `}>
+  <div className="flex flex-col md:flex-row md:justify-between md:space-x-2">
+<div  onClick={() => handleditf(true,b)} className="flex flex-row justify-center lg:px-2 bg-cyan-200 bg-opacity-40 rounded-lg text-teal-950 hover:cursor-pointer hover:bg-opacity-30">
+  <p >{b.date}-{b.shft}</p> </div>
+<div className="flex flex-row justify-center space-x-2 border-b-2 md:border-b-0  md:px-1 border-teal-500"> <p>{b.vno}</p></div>
+<div className="flex flex-row justify-center space-x-2 border-b-2 md:border-b-0  md:px-1 border-teal-500"> <p> {b.sid}</p></div>
+<div className="flex flex-row justify-center border-b-2 md:border-b-0  md:px-1 border-teal-500"><p>{b.site}</p></div>
+</div>
+<div className="flex flex-col md:flex-row md:space-x-2 md:justify-between"><div className="flex flex-row justify-center space-x-1">₹{b.rate}/{b.hrs?(<>h</>):(<>t</>)} * {b.hrs?(<>{b.hrs}h</>):(<>{b.trip}t</>)} =₹{b.odtot}</div>
+<div onClick={() => deletet(true,b._id)} className="flex flex-row md:w-3/4 px-1 justify-center md:px-2 bg-red-200 bg-opacity-80 rounded-lg text-teal-900 hover:cursor-pointer hover:bg-opacity-60">{b.rmrk}
+</div></div>
+{ (dflag && chck===b._id)? (<><div className="flex flex-row justify-evenly "><p className="text-red-300">Deletion ! Sure ?</p><button  onClick={() => handledel(b._id)} className="bg-red-500 px-1 md:px-10 rounded-full hover:bg-opacity-80">Yes</button > <button onClick={() => deletet(false,b._id)} className="bg-indigo-500 rounded-full px-2 md:px-10 hover:bg-opacity-80">No</button></div></>):(<></>)}
+</div>))}
+
+
+ 
+      
+      
 
 {dalert && (
     <div className="text-center mt-4 text-red-300 font-semibold">
@@ -179,10 +272,10 @@ console.log(response)
       {talert}
     </div>
   )}
-
- 
-<div>Add Details:</div>
+</div>
+<div className=" border-2 p-2 border-indigo-500 rounded-md w-full sm:w-4/5">
 <form onSubmit={addtndr} className="space-y-4">
+<div  className="text-center text-sm lg:text-lg font-semibold font-mono bg-indigo-500 bg-opacity-50 p-2 rounded-lg  ">Add Details:</div>
 
 <label htmlFor="date" className="block text-md font-semibold text-green-500">
       Date:
@@ -201,8 +294,8 @@ console.log(response)
        className="flex justify-center gap-2 w-full py-2 mt-4 border-2 border-green-500 bg-green-600 bg-opacity-5 text-green-500 font-semibold rounded-full hover:bg-green-700 hover:text-green-50 "
        >
         <option value="">Select Shift</option>
-  <option value="Day">Day</option>
-  <option value="Night">Night</option>
+  <option value="D">Day</option>
+  <option value="N">Night</option>
 </select>
 
 <label htmlFor="vno" className="block text-md font-semibold text-green-500">
@@ -214,7 +307,7 @@ console.log(response)
         <option value="">Select the Vehicle</option>
 {vhcl.map((b) => (
     
-    <option key={b.vno} value={`${b.vtype}:${b.vno}`}
+    <option key={b.vno} value={b.vtype==="Hyva"?`H:${b.vno}`:(b.vtype==="JCB"?`J:${b.vno}`:`P:${b.vno}`)}
        className='space-y-2 sm:space-y-3 xs:flex justify-between text-teal-950 text-lg font-semibold bg-gradient-to-r from-cyan-400 to-green-300 rounded-md p-4 shadow-lg hover:cursor-pointer hover:opacity-80 container mx-auto'
        >{b.vtype} : {b.vno}
    </option>
@@ -260,7 +353,7 @@ console.log(response)
 
     />
 
-{ (typeof (tmodel?.vno) === "string" && tmodel.vno.match(/^Hyva/))?  (<><label htmlFor="trip" className="block text-md font-semibold text-green-500">
+{ (typeof (tmodel?.vno) === "string" && tmodel.vno.match(/^H/))?  (<><label htmlFor="trip" className="block text-md font-semibold text-green-500">
       No. of Trips:
     </label>
     <input
@@ -269,12 +362,12 @@ console.log(response)
       className=" w-full px-4 py-2 border border-green-500  bg-green-600 bg-opacity-20 rounded-full focus:outline-none focus:ring-2 focus:ring-green-600"
     />
     
-    <span htmlFor="odtot" className="block text-md font-semibold text-green-500"
+    <span htmlFor="odtot" className="block text-md font-semibold text-center p-2 rounded-lg bg-indigo-300 bg-opacity-80 border-indigo-600   text-indigo-500 hover:cursor-pointer hover:bg-indigo-400 hover:text-indigo-100"
       onClick={() => calrht(tmodel.trip,tmodel.rate)}>
      Calculate Rate * Trips:
     </span>
     <input
-      pattern="^(?!\s*$).+" title="This field cannot be empty or just spaces" value={tmodel?.odtot || ""} required type="text" name="odtot" id="odtot"
+      pattern="^(?!\s*$).+" title="This field cannot be empty or just spaces" value={tmodel?.odtot || ""} required type="text" name="odtot" id="odtot" onChange={onchange} 
       className=" w-full px-4 py-2 border border-green-500  bg-green-600 bg-opacity-20 rounded-full focus:outline-none focus:ring-2 focus:ring-green-600"
     />
     
@@ -286,12 +379,12 @@ console.log(response)
       onChange={onchange}       placeholder="Enter hours"
       className=" w-full px-4 py-2 border border-green-500  bg-green-600 bg-opacity-20 rounded-full focus:outline-none focus:ring-2 focus:ring-green-600"
     />
-    <span htmlFor="odtot" className="block text-md font-semibold text-green-500"
+    <span htmlFor="odtot" className="block text-md font-semibold text-center p-2 rounded-lg bg-indigo-300 bg-opacity-80 border-indigo-600   text-indigo-500 hover:cursor-pointer hover:bg-indigo-400 hover:text-indigo-100"
       onClick={() => calrht(tmodel.hrs,tmodel.rate)}>
      Calculate Rate * Hours:
     </span>
     <input
-      pattern="^(?!\s*$).+" title="This field cannot be empty or just spaces" value={tmodel?.odtot || ""} required type="text" name="odtot" id="odtot"
+      pattern="^(?!\s*$).+" title="This field cannot be empty or just spaces" value={tmodel?.odtot || ""} required type="text" name="odtot" id="odtot" onChange={onchange} 
       className=" w-full px-4 py-2 border border-green-500  bg-green-600 bg-opacity-20 rounded-full focus:outline-none focus:ring-2 focus:ring-green-600"
     />
     
@@ -308,12 +401,33 @@ console.log(response)
 
     />
 
-    {eflag? (<><button onClick={(e) => handleupdate(e)} 
-      className="flex justify-center gap-2 w-full py-2 mt-4 border-2 border-green-500 bg-green-600 bg-opacity-5 text-green-500 font-semibold rounded-full hover:bg-green-700 hover:text-green-50 "
-      >Update Data</button></>):
-    (<><button
+{eflag? (<><div className="flex flex-col lg:flex-row "><button onClick={(e) => handleupdate(e)} 
+      className="flex justify-center gap-2 w-full py-2 mt-4 border-2 border-indigo-500 bg-indigo-600 bg-opacity-50 text-indigo-50 font-semibold rounded-full  hover:bg-indigo-700 hover:text-indigo-50 "
+      >Update Data</button>
+      
+      <button onClick={(e) => handleditf(false,null)} 
+      className="flex justify-center gap-2 w-full py-2 mt-4 border-2 border-indigo-500 bg-indigo-600 bg-opacity-50 text-indigo-50 font-semibold rounded-full  hover:bg-indigo-700 hover:text-indigo-50 "
+      >Cancel</button></div>
+      
+      </>):
+    (<></>)}
+
+{sflag? (<><div className="flex flex-col lg:flex-row "><button onClick={(e) => handlsrch(e)} 
+      className="flex justify-center gap-2 w-full py-2 mt-4 border-2 border-indigo-500 bg-indigo-600 bg-opacity-50 text-indigo-50 font-semibold rounded-full  hover:bg-indigo-700 hover:text-indigo-50 "
+      >Search</button>
+      <button onClick={(e) => handleupdate(e)} 
+      className="flex justify-center gap-2 w-full py-2 mt-4 border-2 border-indigo-500 bg-indigo-600 bg-opacity-50 text-indigo-50 font-semibold rounded-full  hover:bg-indigo-700 hover:text-indigo-50 "
+      >Find</button>
+      <button onClick={(e) => handlsflag(false)} 
+      className="flex justify-center gap-2 w-full py-2 mt-4 border-2 border-indigo-500 bg-indigo-600 bg-opacity-50 text-indigo-50 font-semibold rounded-full  hover:bg-indigo-700 hover:text-indigo-50 "
+      >Cancel</button></div>
+      
+      </>):
+    (<></>)}
+
+    {(eflag || sflag)? (<> </>):(<><button
       type="submit"
-      className="flex justify-center gap-2 w-full py-2 mt-4 border-2 border-green-500 bg-green-600 bg-opacity-5 text-green-500 font-semibold rounded-full hover:bg-green-700 hover:text-green-50 "
+      className="flex justify-center gap-2 w-full py-2 mt-4 border-2 border-indigo-500 bg-indigo-600 bg-opacity-50 text-indigo-50 font-semibold rounded-full  hover:bg-indigo-700 hover:text-indigo-50 "
     >
       Add Data
     </button></>)}
@@ -323,7 +437,8 @@ console.log(response)
       {alert}
     </div>
   )}
-
+</div>
+</div>
   </>
  )
 }

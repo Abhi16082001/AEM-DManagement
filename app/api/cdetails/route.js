@@ -15,7 +15,9 @@ export async function GET(request) {
       // Query for a movie that has the title 'Back to the Future'
       // const query = { title: 'Back to the Future' };
       const query = {cid:id  };
-      const ac = await cntr.find(query).toArray();
+      const nsa = await cntr.find(query).toArray();
+      const  ac= nsa.sort((a, b) => new Date(b.date) - new Date(a.date));
+ 
   console.log(ac)
       return NextResponse.json({success:true,ac})
     } finally {

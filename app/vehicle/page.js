@@ -3,8 +3,11 @@ import { useRouter } from 'next/navigation';
 import { useState ,useEffect} from "react"
 import { TbEditCircle } from "react-icons/tb";
 import { RiDeleteBin5Line } from "react-icons/ri";
+import { MdDeleteForever } from "react-icons/md";
+import { RiEditCircleFill } from "react-icons/ri";
 export default function Page() {
   const router = useRouter();
+  const [uflag, setuflag] = useState("")
   const [dflag, setdflag] = useState(false)
   const [dalert, setdalert] = useState("")
   const [chck, setchck] = useState("")
@@ -21,16 +24,25 @@ export default function Page() {
         let vjson = await response.json();
         console.log(vjson)
         if (vjson.result.length === 0) setvalert("No Vehicle Added");
-        setvalert("");
+        setuflag("");
+        setvalert("")
         setvhcl(vjson.result);
         console.log(vhcl)
       };
     
       useEffect(() => {
          fetchv();
-      },[vtpe,vmodel]);
+      },[vtpe,uflag]);
 
  
+      const handleditf = async () => {
+        setvalert("")
+        setalert("")
+        setdalert("")
+        seteflag(false)
+        setvmodel({})
+      }
+
     const onchange = (e) => {
         setvmodel({
           ...vmodel,
@@ -50,11 +62,17 @@ export default function Page() {
       };
       
       const deletev = async (bul,id) => {
-        setdflag(bul);
-        setchck(id);
+        setvalert("")
+        setalert("")
+        setdalert("")
+        setdflag(bul)
+        setchck(id)
       }
       const handledit = async (dtls) => {
-        seteflag(true);
+        setvalert("")
+        setalert("")
+        setdalert("")
+        seteflag(true)
         setvmodel({...dtls,okey:dtls.vno})
       }
 
@@ -73,7 +91,10 @@ export default function Page() {
           if(response.ok){
             console.log("Details Updated Sucessfully ! ")
             setalert("Details Updated Successfully !!")
-            seteflag(false);
+            seteflag(false)
+            setuflag("upd")
+            setvalert("")
+            setdalert("")
            setvmodel({})
           }
           else{
@@ -109,6 +130,9 @@ export default function Page() {
       
             console.log(data.message); // Log success message
             setdalert(` Data deleted successfully.`)
+            setuflag("del")
+            setvalert("")
+            setalert("")
             setvmodel({})
         } catch (erro) {
             console.log('Error:', erro);
@@ -129,7 +153,10 @@ console.log(response)
 const data= await response.json()
           if (response.ok) {
             setalert("Vehicle added Successfully!");
-            setvmodel({});
+            setvmodel({})
+            setuflag("add")
+            setvalert("")
+            setdalert("")
           } else {
             setalert(data.message);
           }
@@ -141,39 +168,47 @@ const data= await response.json()
 
  return (
   <>
-  Menu for Vehicles !!
-  <select onChange={cvhcl} name="vtype" id="vtype">
+  <div className="flex-col justify-items-center space-y-2 p-1 ">
+  <div className="bg-gradient-to-r from-indigo-400 to-purple-300 w-11/12 lg:w-4/5  text-sm sm:text-lg flex flex-col sm:flex-row sm:justify-center sm:gap-8  font-serif font-semibold  p-2  rounded-md">
+  <p className='text-center'>Menu for Vehicles !! </p>
+  <select className='rounded-full sm:p-1 p-2 bg-purple-500' onChange={cvhcl} name="vtype" id="vtype">
     <option value="">Choose Vehicle type</option>
   <option value="JCB">JCB</option>
   <option value="Hyva">Hyva</option>
   <option value="Poclain">Poclain</option>
   <option value="All">All</option>
 </select>
+
+</div>
+<div className="container h-[75vh] bg-blue-500 p-2 rounded-lg bg-opacity-20 w-11/12 lg:w-4/5 space-y-2 overflow-y-scroll">
 {valert && (
     <div className="text-center mt-4 text-green-200 font-semibold">
       {valert}
     </div>
   )}
-
-<div>
   {vhcl.map((b) => (
     
         <div key={b.vno}>
              
            {(b.vtype===vtpe || vtpe==="All")?(<><div
-           className='space-y-2 sm:space-y-3 xs:flex justify-between text-teal-950 text-lg font-semibold bg-gradient-to-r from-cyan-400 to-green-300 rounded-md p-4 shadow-lg hover:cursor-pointer hover:opacity-80 container mx-auto'
-           ><span  onClick={() => handlevdetails(b)} >{b.vtype} : {b.vno}</span>
-       <div className="  flex justify-center gap-20  xs:justify-between xs:gap-8">   <button className= "   hover:bg-green-700 bg-green-200   p-2 rounded-full" onClick={() => handledit(b)}><TbEditCircle className="text-green-700 hover:text-green-200"  size={30}  /></button>
-       { (dflag && chck===b.vno)? (<><button onClick={() => handledel(b.vno)} className="bg-red-500">Yes</button > <button onClick={() => deletev(false,b.vno)} className="bg-green-500">No</button></>):(<><button className="hover:bg-red-700 bg-red-200     p-2 rounded-full " onClick={() => deletev(true,b.vno)}><RiDeleteBin5Line className="text-red-700 hover:text-red-200"  size={30} /></button></>)}
+          className='space-y-2 sm:space-x-2 sm:space-y-3 flex flex-col sm:flex-row sm:justify-between text-teal-950 text-lg font-semibold bg-gradient-to-r from-cyan-400 to-green-300 rounded-md p-4  shadow-lg  container mx-auto'
+           ><div onClick={() => handlevdetails(b)} className='bg-red-200 hover:cursor-pointer hover:opacity-80 rounded-md py-2 px-5 w-full flex flex-col sm:flex-row sm:space-x-3'>
+            <span className='sm:border-teal-950 sm:border-b-0 border-b-2 sm:w- sm:border-r-2 sm:px-4'  >{b.vtype} </span><span> {b.vno}</span></div>
+       <div className="  flex flex-row sm:gap-8  justify-evenly">   <button className= "   hover:bg-green-700 bg-green-200   p-2 rounded-full" onClick={() => handledit(b)}><RiEditCircleFill  className="text-green-700 hover:text-green-200"  size={30}  /></button>
+       { (dflag && chck===b.vno)? (<><button onClick={() => handledel(b.vno)} className="bg-red-500 text-red-200 rounded-full md:px-4 px-2">Yes</button > <button onClick={() => deletev(false,b.vno)} className="bg-green-500 text-green-200 rounded-full md:px-4 px-2">No</button></>):(<><button className="hover:bg-red-700 bg-red-200     p-2 rounded-full " onClick={() => deletev(true,b.vno)}><MdDeleteForever  className="text-red-700 hover:text-red-200"  size={30} /></button></>)}
           </div> </div></>):"" }</div>
-      ))}</div>
+      ))}
 
 {dalert && (
-    <div className="text-center mt-4 text-red-300 font-semibold">
+  <div className="text-center mt-4 text-red-300 font-semibold">
       {dalert}
     </div>
   )}
+  </div>
+
+  <div className=" border-2 p-2 border-indigo-500 rounded-md w-full sm:w-4/5">
 <form onSubmit={addv} className="space-y-4">
+<div className="text-center text-sm lg:text-lg font-semibold font-mono bg-indigo-500 bg-opacity-50 p-2 rounded-lg  ">Add Details: </div>
     <label htmlFor="vno" className="block text-md font-semibold text-green-500">
       Vehicle No.:
     </label>
@@ -183,7 +218,9 @@ const data= await response.json()
       className=" w-full px-4 py-2 border border-green-500  bg-green-600 bg-opacity-20 rounded-full focus:outline-none focus:ring-2 focus:ring-green-600"
 
     />
-    
+    <label htmlFor="vno" className="block text-md font-semibold text-green-500">
+      Vehicle Type:
+    </label>
     <select  onChange={onchange}  name="vtype" id="vtype" value={vmodel?.vtype || ""}
        className="flex justify-center gap-2 w-full py-2 mt-4 border-2 border-green-500 bg-green-600 bg-opacity-5 text-green-500 font-semibold rounded-full hover:bg-green-700 hover:text-green-50 "
        >
@@ -194,7 +231,12 @@ const data= await response.json()
 </select>
 {eflag? (<><button onClick={(e) => handleupdate(e)} 
       className="flex justify-center gap-2 w-full py-2 mt-4 border-2 border-green-500 bg-green-600 bg-opacity-5 text-green-500 font-semibold rounded-full hover:bg-green-700 hover:text-green-50 "
-      >Update Vehicle</button></>):
+      >Update Vehicle</button>
+      
+      <button onClick={(e) => handleditf()} 
+      className="flex justify-center gap-2 w-full py-2 mt-4 border-2 border-indigo-500 bg-indigo-600 bg-opacity-50 text-indigo-50 font-semibold rounded-full  hover:bg-indigo-700 hover:text-indigo-50 "
+      >Cancel</button>
+      </>):
     (<><button
       type="submit"
       className="flex justify-center gap-2 w-full py-2 mt-4 border-2 border-green-500 bg-green-600 bg-opacity-5 text-green-500 font-semibold rounded-full hover:bg-green-700 hover:text-green-50 "
@@ -207,6 +249,8 @@ const data= await response.json()
       {alert}
     </div>
   )}
+  </div>
+  </div>
   </>
  )
 }
