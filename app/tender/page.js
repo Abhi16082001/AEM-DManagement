@@ -171,11 +171,11 @@ const data= await response.json()
  return (
   <>
   <div className="flex-col justify-items-center space-y-2 p-1 ">
- <div className="bg-gradient-to-r from-indigo-400 to-purple-300 w-11/12 sm:w-4/5  text-sm sm:text-lg  text-center font-serif font-semibold  p-2  rounded-md">All Tenders:</div>
+ <div className="bg-gradient-to-r from-indigo-600 to-purple-300 w-11/12 sm:w-4/5  text-sm sm:text-lg  text-center font-serif font-semibold  p-2  rounded-md">All Tenders:</div>
 
  <div className="container h-[75vh] bg-blue-500 p-2 rounded-lg bg-opacity-20 w-11/12 lg:w-4/5 space-y-2 overflow-y-scroll">
 {talert && (
-    <div className="text-center mt-4 text-green-200 font-semibold">
+    <div className="text-center mt-4 text-violet-500 font-semibold">
       {talert}
     </div>
   )}
@@ -184,103 +184,103 @@ const data= await response.json()
   {tndr.map((b) => (
     
         <div key={b.tid}
-          className='space-y-2 sm:space-x-2 sm:space-y-3 flex flex-col sm:flex-row sm:justify-between text-teal-950 text-lg font-semibold bg-gradient-to-r from-cyan-400 to-green-300 rounded-md p-4  shadow-lg  container mx-auto'
-           ><div onClick={() => handletdetails(b)} className='bg-red-200 hover:cursor-pointer hover:opacity-80 rounded-md py-2 px-5 w-full flex flex-col lg:flex-row lg:space-x-3'>
-            <span className='lg:border-teal-950 lg:border-b-0 border-b-2 lg:border-r-2 lg:p-3'  >{b.tid} </span><span className='lg:border-teal-950 lg:border-b-0 border-b-2 lg:border-r-2 lg:p-3 lg:pl-1'> {b.td}</span><span className='lg:p-3 lg:pl-0a' > {b.name}</span > </div>
-       <div className="  flex flex-row sm:gap-8  justify-evenly">   <button className= "   hover:bg-green-700 bg-green-200   p-2 rounded-full" onClick={() => handledit(b)}><RiEditCircleFill  className="text-green-700 hover:text-green-200"  size={30}  /></button>
-       { (dflag && chck===b.tid)? (<><button onClick={() => handledel(b.tid)} className="bg-red-500 rounded-full md:px-4 px-2">Yes</button > <button onClick={() => deletet(false,b.tid)} className="bg-green-500 rounded-full md:px-4 px-2">No</button></>):(<><button className="hover:bg-red-700 bg-red-200     p-2 rounded-full " onClick={() => deletet(true,b.tid)}><MdDeleteForever  className="text-red-700 hover:text-red-200"  size={30} /></button></>)}
+          className='space-y-2 sm:space-x-2 sm:space-y-3 flex flex-col sm:flex-row sm:justify-between text-teal-950 text-lg font-semibold bg-gradient-to-r from-violet-700 to-violet-800 rounded-md p-4  shadow-lg  container mx-auto'
+           ><div onClick={() => handletdetails(b)} className='bg-violet-300 bg-opacity-80 hover:cursor-pointer hover:opacity-80 rounded-md py-2 px-5 w-full flex flex-col lg:flex-row lg:space-x-1'>
+            <span className='border-violet-950 sm:border-b-0 border-b-2 sm:border-r-2 sm:p-3'  >{b.tid} </span><span className='border-teal-950 sm:border-b-0 border-b-2 sm:border-r-2 sm:p-3 sm:pl-1'> {b.td}</span><span className='lg:p-3 lg:pl-0a' > {b.name}</span > </div>
+       <div className="  flex flex-row sm:gap-8  justify-evenly">   <button className= "   hover:bg-blue-700 bg-blue-200   p-2 rounded-full" onClick={() => handledit(b)}><RiEditCircleFill  className="text-blue-500 hover:text-blue-200"  size={30}  /></button>
+       { (dflag && chck===b.tid)? (<><button onClick={() => handledel(b.tid)} className="bg-red-500 hover:bg-opacity-50 text-red-200 rounded-full md:px-4 px-2">Yes</button > <button onClick={() => deletet(false,b.tid)} className="bg-green-500 hover:bg-opacity-50 text-green-200 rounded-full md:px-4 px-2">No</button></>):(<><button className="hover:bg-fuchsia-700 bg-fuchsia-200     p-2 rounded-full " onClick={() => deletet(true,b.tid)}><MdDeleteForever  className="text-fuchsia-700 hover:text-fuchsia-200"  size={30} /></button></>)}
           </div> </div>
       ))}
 
 {dalert && (
-    <div className="text-center mt-4 text-red-300 font-semibold">
+    <div className="text-center mt-4 text-red-500 font-semibold">
       {dalert}
     </div>
   )}
 
 </div>
 
-<div className=" border-2 p-2 border-indigo-500 rounded-md w-full sm:w-4/5">
+<div className=" border-2 p-2 border-cyan-500 bg-cyan-100 bg-opacity-50 rounded-md w-full sm:w-4/5">
 <form onSubmit={addt} className="space-y-4">
-<div className="text-center text-sm lg:text-lg font-semibold font-mono bg-indigo-500 bg-opacity-50 p-2 rounded-lg  ">Add Details: </div>
-    <label htmlFor="tid" className="block text-md font-semibold text-green-500">
+<div className="text-center text-sm lg:text-lg font-semibold font-mono bg-cyan-400 bg-opacity-50 p-2 rounded-lg  ">Add Details: </div>
+    <label htmlFor="tid" className="block text-md font-semibold text-cyan-900">
       Tender ID :
     </label>
     <input
       pattern="^(?!\s*$).+" title="This field cannot be empty or just spaces" value={tmodel?.tid || ""} required type="text" name="tid" id="tid"
       onChange={onchange}       placeholder="Enter Tender ID"
-      className=" w-full px-4 py-2 border border-green-500  bg-green-600 bg-opacity-20 rounded-full focus:outline-none focus:ring-2 focus:ring-green-600"
+      className=" w-full px-4 py-2 border border-cyan-500  bg-cyan-600 bg-opacity-20 rounded-full focus:outline-none focus:ring-2 focus:ring-cyan-600"
 
     />
     
-    <label htmlFor="td" className="block text-md font-semibold text-green-500">
+    <label htmlFor="td" className="block text-md font-semibold text-cyan-900">
       Tender Division :
     </label>
     <input
       pattern="^(?!\s*$).+" title="This field cannot be empty or just spaces" value={tmodel?.td || ""} required type="text" name="td" id="td"
       onChange={onchange}       placeholder="Enter Division"
-      className=" w-full px-4 py-2 border border-green-500  bg-green-600 bg-opacity-20 rounded-full focus:outline-none focus:ring-2 focus:ring-green-600"
+      className=" w-full px-4 py-2 border border-cyan-500  bg-cyan-600 bg-opacity-20 rounded-full focus:outline-none focus:ring-2 focus:ring-cyan-600"
 
     />
 
-    <label htmlFor="name" className="block text-md font-semibold text-green-500">
+    <label htmlFor="name" className="block text-md font-semibold text-cyan-900">
       Tender Name :
     </label>
     <input
       pattern="^(?!\s*$).+" title="This field cannot be empty or just spaces" value={tmodel?.name || ""} required type="text" name="name" id="name"
       onChange={onchange}       placeholder="Enter Name"
-      className=" w-full px-4 py-2 border border-green-500  bg-green-600 bg-opacity-20 rounded-full focus:outline-none focus:ring-2 focus:ring-green-600"
+      className=" w-full px-4 py-2 border border-cyan-500  bg-cyan-600 bg-opacity-20 rounded-full focus:outline-none focus:ring-2 focus:ring-cyan-600"
 
     />
 
-<label htmlFor="amount" className="block text-md font-semibold text-green-500">
+<label htmlFor="amount" className="block text-md font-semibold text-cyan-900">
       Tender Amount :
     </label>
     <input
       pattern="^(?!\s*$).+" title="This field cannot be empty or just spaces" value={tmodel?.amount || ""} required type="text" name="amount" id="amount"
       onChange={onchange}       placeholder="Enter amount"
-      className=" w-full px-4 py-2 border border-green-500  bg-green-600 bg-opacity-20 rounded-full focus:outline-none focus:ring-2 focus:ring-green-600"
+      className=" w-full px-4 py-2 border border-cyan-500  bg-cyan-600 bg-opacity-20 rounded-full focus:outline-none focus:ring-2 focus:ring-cyan-600"
 
     />
 
-<label htmlFor="per" className="block text-md font-semibold text-green-500">
+<label htmlFor="per" className="block text-md font-semibold text-cyan-900">
       Tender submission percentage with sign :
     </label>
     <input
       pattern="^(?!\s*$).+" title="This field cannot be empty or just spaces" value={tmodel?.per || ""} required type="text" name="per" id="per"
       onChange={onchange}       placeholder="Enter percentage without symbol"
-      className=" w-full px-4 py-2 border border-green-500  bg-green-600 bg-opacity-20 rounded-full focus:outline-none focus:ring-2 focus:ring-green-600"
+      className=" w-full px-4 py-2 border border-cyan-500  bg-cyan-600 bg-opacity-20 rounded-full focus:outline-none focus:ring-2 focus:ring-cyan-600"
 
     />
 
-<span htmlFor="pamt" className="block text-md font-semibold text-center p-2 rounded-lg bg-indigo-300 bg-opacity-80 border-indigo-600   text-indigo-500 hover:cursor-pointer hover:bg-indigo-400 hover:text-indigo-100"
+<span htmlFor="pamt" className="block text-md font-semibold text-center p-2 rounded-lg bg-cyan-300 bg-opacity-80 border-cyan-600   text-cyan-900 hover:cursor-pointer hover:bg-cyan-400 hover:text-cyan-100"
 onClick={() => calamt(tmodel.per,tmodel.amount)}>
        Calculate Amount after percentage:
     </span>
     <input
       pattern="^(?!\s*$).+" title="This field cannot be empty or just spaces" value={tmodel?.pamt || ""} required type="text" name="pamt" id="pamt"  onChange={onchange} 
-      className=" w-full px-4 py-2 border border-green-500  bg-green-600 bg-opacity-20 rounded-full focus:outline-none focus:ring-2 focus:ring-green-600"
+      className=" w-full px-4 py-2 border border-cyan-500  bg-cyan-600 bg-opacity-20 rounded-full focus:outline-none focus:ring-2 focus:ring-cyan-600"
 
     />
   
   {eflag? (<><button onClick={(e) => handleupdate(e)} 
-      className="flex justify-center gap-2 w-full py-2 mt-4 border-2 border-green-500 bg-green-600 bg-opacity-5 text-green-500 font-semibold rounded-full hover:bg-green-700 hover:text-green-50 "
+      className="flex justify-center gap-2 w-full py-2 mt-4 border-2 border-cyan-500 bg-cyan-600 bg-opacity-50 text-cyan-50 font-semibold rounded-full hover:bg-cyan-700 hover:text-cyan-50 "
       >Update Tender</button>
       
       <button onClick={(e) => handleditf()} 
-      className="flex justify-center gap-2 w-full py-2 mt-4 border-2 border-indigo-500 bg-indigo-600 bg-opacity-50 text-indigo-50 font-semibold rounded-full  hover:bg-indigo-700 hover:text-indigo-50 "
+      className="flex justify-center gap-2 w-full py-2 mt-4 border-2 border-cyan-500 bg-cyan-600 bg-opacity-50 text-cyan-50 font-semibold rounded-full  hover:bg-cyan-700 hover:text-cyan-50 "
       >Cancel</button>
       
       </>):
     (<><button
       type="submit"
-      className="flex justify-center gap-2 w-full py-2 mt-4 border-2 border-green-500 bg-green-600 bg-opacity-5 text-green-500 font-semibold rounded-full hover:bg-green-700 hover:text-green-50 "
+      className="flex justify-center gap-2 w-full py-2 mt-4 border-2 border-cyan-500 bg-cyan-600 bg-opacity-50 text-cyan-50 font-semibold rounded-full hover:bg-cyan-700 hover:text-cyan-50 "
     >
       Add Tender
     </button></>)}
   </form>
   {alert && (
-    <div className="text-center mt-4 text-green-200 font-semibold">
+    <div className="text-center mt-4 text-cyan-800 font-semibold">
       {alert}
     </div>
   )}

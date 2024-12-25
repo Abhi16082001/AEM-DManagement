@@ -169,9 +169,9 @@ const data= await response.json()
  return (
   <>
   <div className="flex-col justify-items-center space-y-2 p-1 ">
-  <div className="bg-gradient-to-r from-indigo-400 to-purple-300 w-11/12 lg:w-4/5  text-sm sm:text-lg flex flex-col sm:flex-row sm:justify-center sm:gap-8  font-serif font-semibold  p-2  rounded-md">
+  <div className="bg-gradient-to-r from-indigo-600 to-purple-300 w-11/12 lg:w-4/5  text-sm sm:text-lg flex flex-col sm:flex-row sm:justify-center sm:gap-8  font-serif font-semibold  p-2  rounded-md">
   <p className='text-center'>Menu for Vehicles !! </p>
-  <select className='rounded-full sm:p-1 p-2 bg-purple-500' onChange={cvhcl} name="vtype" id="vtype">
+  <select className='rounded-full sm:p-1 p-2 bg-indigo-200' onChange={cvhcl} name="vtype" id="vtype">
     <option value="">Choose Vehicle type</option>
   <option value="JCB">JCB</option>
   <option value="Hyva">Hyva</option>
@@ -182,7 +182,7 @@ const data= await response.json()
 </div>
 <div className="container h-[75vh] bg-blue-500 p-2 rounded-lg bg-opacity-20 w-11/12 lg:w-4/5 space-y-2 overflow-y-scroll">
 {valert && (
-    <div className="text-center mt-4 text-green-200 font-semibold">
+    <div className="text-center mt-4 text-teal-500 font-semibold">
       {valert}
     </div>
   )}
@@ -191,38 +191,38 @@ const data= await response.json()
         <div key={b.vno}>
              
            {(b.vtype===vtpe || vtpe==="All")?(<><div
-          className='space-y-2 sm:space-x-2 sm:space-y-3 flex flex-col sm:flex-row sm:justify-between text-teal-950 text-lg font-semibold bg-gradient-to-r from-cyan-400 to-green-300 rounded-md p-4  shadow-lg  container mx-auto'
-           ><div onClick={() => handlevdetails(b)} className='bg-red-200 hover:cursor-pointer hover:opacity-80 rounded-md py-2 px-5 w-full flex flex-col sm:flex-row sm:space-x-3'>
-            <span className='sm:border-teal-950 sm:border-b-0 border-b-2 sm:w- sm:border-r-2 sm:px-4'  >{b.vtype} </span><span> {b.vno}</span></div>
-       <div className="  flex flex-row sm:gap-8  justify-evenly">   <button className= "   hover:bg-green-700 bg-green-200   p-2 rounded-full" onClick={() => handledit(b)}><RiEditCircleFill  className="text-green-700 hover:text-green-200"  size={30}  /></button>
-       { (dflag && chck===b.vno)? (<><button onClick={() => handledel(b.vno)} className="bg-red-500 text-red-200 rounded-full md:px-4 px-2">Yes</button > <button onClick={() => deletev(false,b.vno)} className="bg-green-500 text-green-200 rounded-full md:px-4 px-2">No</button></>):(<><button className="hover:bg-red-700 bg-red-200     p-2 rounded-full " onClick={() => deletev(true,b.vno)}><MdDeleteForever  className="text-red-700 hover:text-red-200"  size={30} /></button></>)}
+          className='space-y-2 sm:space-x-2 sm:space-y-3 flex flex-col sm:flex-row sm:justify-between  text-lg font-semibold bg-gradient-to-r from-teal-700 to-teal-800 rounded-md  p-3  shadow-lg  container mx-auto'
+           ><div onClick={() => handlevdetails(b)} className='bg-teal-300 bg-opacity-80 text-teal-950 hover:cursor-pointer hover:opacity-80 rounded-md py-3 px-5 w-full flex flex-col sm:flex-row sm:space-x-3'>
+            <span className='border-teal-950 sm:border-b-0 border-b-2  sm:border-r-2 sm:px-4'  >{b.vtype} </span><span> {b.vno}</span></div>
+       <div className="  flex flex-row sm:gap-8  justify-evenly">   <button className= "   hover:bg-blue-500 bg-blue-200   p-2 rounded-full" onClick={() => handledit(b)}><RiEditCircleFill  className="text-blue-500 hover:text-blue-200"  size={30}  /></button>
+       { (dflag && chck===b.vno)? (<><button onClick={() => handledel(b.vno)} className="bg-red-500 hover:bg-opacity-50 text-red-200 rounded-full md:px-4 px-2">Yes</button > <button onClick={() => deletev(false,b.vno)} className="bg-green-500 hover:bg-opacity-50 text-green-200 rounded-full md:px-4 px-2">No</button></>):(<><button className="hover:bg-fuchsia-700 bg-fuchsia-200     p-2 rounded-full " onClick={() => deletev(true,b.vno)}><MdDeleteForever  className="text-fuchsia-700 hover:text-fuchsia-200"  size={30} /></button></>)}
           </div> </div></>):"" }</div>
       ))}
 
 {dalert && (
-  <div className="text-center mt-4 text-red-300 font-semibold">
+  <div className="text-center mt-4 text-red-500 font-semibold">
       {dalert}
     </div>
   )}
   </div>
 
-  <div className=" border-2 p-2 border-indigo-500 rounded-md w-full sm:w-4/5">
+  <div className=" border-2 p-2 border-cyan-500 bg-cyan-100 bg-opacity-50 rounded-md w-full sm:w-4/5">
 <form onSubmit={addv} className="space-y-4">
-<div className="text-center text-sm lg:text-lg font-semibold font-mono bg-indigo-500 bg-opacity-50 p-2 rounded-lg  ">Add Details: </div>
-    <label htmlFor="vno" className="block text-md font-semibold text-green-500">
+<div className="text-center text-sm lg:text-lg font-semibold font-mono bg-cyan-400 bg-opacity-50 p-2 rounded-lg  ">Add Details: </div>
+    <label htmlFor="vno" className="block text-md font-semibold text-cyan-900">
       Vehicle No.:
     </label>
     <input
       pattern="^(?!\s*$).+" title="This field cannot be empty or just spaces" value={vmodel?.vno || ""} required type="text" name="vno" id="vno"
       onChange={onchange}       placeholder="Enter vno"
-      className=" w-full px-4 py-2 border border-green-500  bg-green-600 bg-opacity-20 rounded-full focus:outline-none focus:ring-2 focus:ring-green-600"
+      className=" w-full px-4 py-2 border border-cyan-500  bg-cyan-600 bg-opacity-20 rounded-full focus:outline-none focus:ring-2 focus:ring-cyan-600"
 
     />
-    <label htmlFor="vno" className="block text-md font-semibold text-green-500">
+    <label htmlFor="vno" className="block text-md font-semibold text-cyan-900">
       Vehicle Type:
     </label>
     <select  onChange={onchange}  name="vtype" id="vtype" value={vmodel?.vtype || ""}
-       className="flex justify-center gap-2 w-full py-2 mt-4 border-2 border-green-500 bg-green-600 bg-opacity-5 text-green-500 font-semibold rounded-full hover:bg-green-700 hover:text-green-50 "
+       className="flex justify-center gap-2 w-full py-2 mt-4 border-2 border-cyan-500 bg-cyan-600 bg-opacity-5 text-cyan-500 font-semibold rounded-full hover:bg-cyan-700 hover:text-cyan-50 "
        >
         <option value="">Select the Vehicle Type</option>
   <option value="JCB">JCB</option>
@@ -230,22 +230,22 @@ const data= await response.json()
   <option value="Poclain">Poclain</option>
 </select>
 {eflag? (<><button onClick={(e) => handleupdate(e)} 
-      className="flex justify-center gap-2 w-full py-2 mt-4 border-2 border-green-500 bg-green-600 bg-opacity-5 text-green-500 font-semibold rounded-full hover:bg-green-700 hover:text-green-50 "
+      className="flex justify-center gap-2 w-full py-2 mt-4 border-2 border-cyan-500 bg-cyan-600 bg-opacity-50 text-cyan-50 font-semibold rounded-full hover:bg-cyan-700 hover:text-cyan-50 "
       >Update Vehicle</button>
       
       <button onClick={(e) => handleditf()} 
-      className="flex justify-center gap-2 w-full py-2 mt-4 border-2 border-indigo-500 bg-indigo-600 bg-opacity-50 text-indigo-50 font-semibold rounded-full  hover:bg-indigo-700 hover:text-indigo-50 "
+      className="flex justify-center gap-2 w-full py-2 mt-4 border-2 border-cyan-500 bg-cyan-600 bg-opacity-50 text-cyan-50 font-semibold rounded-full  hover:bg-cyan-700 hover:text-cyan-50 "
       >Cancel</button>
       </>):
     (<><button
       type="submit"
-      className="flex justify-center gap-2 w-full py-2 mt-4 border-2 border-green-500 bg-green-600 bg-opacity-5 text-green-500 font-semibold rounded-full hover:bg-green-700 hover:text-green-50 "
+      className="flex justify-center gap-2 w-full py-2 mt-4 border-2 border-cyan-500 bg-cyan-600 bg-opacity-50 text-cyan-50 font-semibold rounded-full hover:bg-cyan-700 hover:text-cyan-50 "
     >
       Add Vehicle
     </button></>)}
   </form>
   {alert && (
-    <div className="text-center mt-4 text-green-200 font-semibold">
+    <div className="text-center mt-4 text-cyan-800 font-semibold">
       {alert}
     </div>
   )}

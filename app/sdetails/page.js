@@ -1,11 +1,14 @@
 "use client"
+import { FcHome } from "react-icons/fc";
+import { FcSearch } from "react-icons/fc";
 import { useState, useEffect,Suspense,useRef } from "react";
 import { TbEditCircle } from "react-icons/tb";
 import { useSearchParams } from "next/navigation";
 import { RiDeleteBin5Line } from "react-icons/ri";
+import Link from "next/link";
 export default function Page() {
   const cardRefs = useRef([]);
-  const [selectedId, setSelectedId] = useState(null);
+  const [selid, setselid] = useState(null)
   const [eflag, seteflag] = useState(false)
   const [sflag, setsflag] = useState(false)
 const [uflag, setuflag] = useState("")
@@ -50,7 +53,7 @@ useEffect(() => {
       }
 
 
-      const handlsrch = async (e) => {
+      const handlsrch = async (e,isfnd) => {
         e.preventDefault(); 
           setalert("Searching...");
           const co = { ...smodel, dtype:"staff" };
@@ -62,8 +65,18 @@ useEffect(() => {
             if (data.success) {
            setstaff(data.sr)
            if(data.sr.length==0){setsalert("No Matches Found !!")
-            setSelectedId(null)
+            setselid(null)
            }
+           setTimeout(() => {
+            const element = document.getElementById("re-renderpls");
+            element?.scrollIntoView({ behavior: "smooth" });
+          }, 0); 
+           setselid(null)
+               if(isfnd) {setselid(data.sr[data.sr.length - 1]._id)
+                 setuflag("found")
+               }
+                 const element = document.getElementById("re-renderpls");
+                 element?.scrollIntoView({ behavior: "smooth" });
               setalert("Search Successful !")
             } else {
               setalert("No such Record !!");
@@ -73,6 +86,23 @@ useEffect(() => {
             console.error('Error:', error);
           }
         };
+
+
+        const handlefind = (e) => {
+          handlsrch(e,true);
+          // Find the index of the item with the matching _id
+          fetchs();}
+          useEffect(() => {
+            if (selid !== null) {
+          const index = staff.findIndex((item) => item._id === selid);
+          console.log(index)
+          if (index !== -1 && cardRefs.current[index]) {
+            // Scroll to the matched card
+            cardRefs.current[index].scrollIntoView({ behavior: 'smooth', block: 'center' });
+          } else {
+            setselid(null)
+          }}
+        }, [selid, staff]);
 
       const handlsflag = async (bul) => {
         setuflag("")
@@ -187,12 +217,13 @@ console.log(response)
 
       </Suspense>
       <div className="flex-col justify-items-center space-y-2 p-1 ">
-
-      <div>
-  <button onClick={() => handlsflag(true)}>search</button>
+      <div className="bg-blue-50 rounded-full w-full p-1 flex flex-row justify-evenly sm:justify-between sm:px-10 ">
+  <button className="bg-blue-300 rounded-full p-2 hover:bg-blue-400" onClick={() => handlsflag(true)}>  <FcSearch size={30} />  </button>
+  <Link className="bg-blue-300 rounded-full p-2 hover:bg-blue-400" href="/menu"><FcHome  size={30}/></Link>
  </div>
+    
 
-      <div className="bg-gradient-to-r from-indigo-400 to-purple-300 w-11/12 lg:w-4/5  text-sm lg:text-lg flex flex-col md:flex-row md:justify-between  font-serif font-semibold  p-2  rounded-md"><p> Staff ID: {sd?(<>{sd.sid} </>):"Loading..."} </p>
+      <div className="bg-gradient-to-r from-indigo-600 to-purple-500 text-sky-100 w-full  text-sm lg:text-lg flex flex-col md:flex-row md:justify-between  font-serif font-semibold  p-2  rounded-md"><p> Staff ID: {sd?(<>{sd.sid} </>):"Loading..."} </p>
  
  <p>Staff Name: {sd?(<>{sd.name} </>):"Loading..."} </p>
  <p>Staff Role: {sd?(<>{sd.srole} </>):"Loading..."} </p></div>
@@ -200,15 +231,15 @@ console.log(response)
 
 
 
-      <div className="container h-[75vh] bg-blue-500 p-2 rounded-lg bg-opacity-20 w-11/12 lg:w-4/5 space-y-2 overflow-y-scroll">
+      <div id="re-renderpls" className="container h-[75vh] bg-blue-700 p-2 rounded-lg bg-opacity-30 w-full lg:w-4/5 space-y-2 overflow-y-scroll">
 {staff.map((b,index) => (
 <div key={b._id} ref={(el) => (cardRefs.current[index] = el)} className={`  transition ${
-              selectedId === b._id
-                ? 'bg-green-100 border-green-500'
+              selid === b._id
+                ? 'bg-indigo-100 border-indigo-500'
                 : ''
-            }  flex flex-col space-y-1  md:space-y-2  text-sm lg:text-lg  bg-cyan-700 rounded-lg p-1 text-teal-200 font-mono `}>
+            }  flex flex-col space-y-1  md:space-y-2  text-sm lg:text-lg  bg-sky-200 rounded-lg p-1 text-sky-900 font-mono `}>
 <div className="flex flex-col md:flex-row md:justify-between md:space-x-2">
-<div  onClick={() => handleditf(true,b)} className="flex flex-row justify-center lg:px-2 bg-cyan-200 bg-opacity-40 rounded-lg text-teal-950 hover:cursor-pointer hover:bg-opacity-30">
+<div  onClick={() => handleditf(true,b)} className="flex flex-row justify-center lg:px-2 bg-cyan-500 bg-opacity-40 rounded-lg text-teal-950 hover:cursor-pointer hover:bg-opacity-30">
   {b.date} </div>
 <div className="flex flex-row justify-center space-x-2   md:px-1 "> {b.amount}</div>
 
@@ -222,45 +253,45 @@ console.log(response)
  ))}
 
 {dalert && (
-    <div className="text-center mt-4 text-red-300 font-semibold">
+    <div className="text-center mt-4 text-red-500 font-semibold">
       {dalert}
     </div>
   )}
   {salert && (
-    <div className="text-center mt-4 text-green-200 font-semibold">
+    <div className="text-center mt-4 text-sky-800 font-semibold">
       {salert}
     </div>
   )}
 </div>
-<div className=" border-2 p-2 border-indigo-500 rounded-md w-full sm:w-4/5">
+<div className=" border-2 p-2 border-indigo-300 bg-indigo-200 rounded-md w-full sm:w-4/5">
 <form onSubmit={addstaff} className="space-y-4">
 <div  className="text-center text-sm lg:text-lg font-semibold font-mono bg-indigo-500 bg-opacity-50 p-2 rounded-lg  ">Add Details:</div>
-    <label htmlFor="date" className="block text-md font-semibold text-green-500">
+    <label htmlFor="date" className="block text-md font-semibold text-indigo-500">
       Date:
     </label>
     <input
       pattern="^(?!\s*$).+" title="This field cannot be empty or just spaces" value={smodel?.date || ""} required type="date" name="date" id="date" 
       onChange={onchange}       placeholder="Enter Date"
-      className=" w-full px-4 py-2 border border-green-500 bg-green-600 bg-opacity-20 rounded-full focus:outline-none focus:ring-2 focus:ring-green-600"
+      className=" w-full px-4 py-2 border border-indigo-500 bg-indigo-600 bg-opacity-20 rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-600"
 
     />
-    <label htmlFor="amount" className="block text-md font-semibold text-green-500">
+    <label htmlFor="amount" className="block text-md font-semibold text-indigo-500">
       Amount:
     </label>
     <input
       pattern="^(?!\s*$).+" title="This field cannot be empty or just spaces" value={smodel?.amount || ""} required type="text" name="amount" id="amount"
       onChange={onchange}       placeholder="Enter amount"
-      className=" w-full px-4 py-2 border border-green-500  bg-green-600 bg-opacity-20 rounded-full focus:outline-none focus:ring-2 focus:ring-green-600"
+      className=" w-full px-4 py-2 border border-indigo-500  bg-indigo-600 bg-opacity-20 rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-600"
 
     />
 
-<label htmlFor="rmrk" className="block text-md font-semibold text-green-500">
+<label htmlFor="rmrk" className="block text-md font-semibold text-indigo-500">
       Remarks:
     </label>
     <input
       pattern="^(?!\s*$).+" title="This field cannot be empty or just spaces" value={smodel?.rmrk || ""} required type="text" name="rmrk" id="rmrk"
       onChange={onchange}       placeholder="Enter any Remarks"
-      className=" w-full px-4 py-2 border border-green-500  bg-green-600 bg-opacity-20 rounded-full focus:outline-none focus:ring-2 focus:ring-green-600"
+      className=" w-full px-4 py-2 border border-indigo-500  bg-indigo-600 bg-opacity-20 rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-600"
 
     />
     
@@ -275,10 +306,10 @@ console.log(response)
       </>):
     (<></>)}
 
-{sflag? (<><div className="flex flex-col lg:flex-row "><button onClick={(e) => handlsrch(e)} 
+{sflag? (<><div className="flex flex-col lg:flex-row "><button onClick={(e) => handlsrch(e,false)} 
       className="flex justify-center gap-2 w-full py-2 mt-4 border-2 border-indigo-500 bg-indigo-600 bg-opacity-50 text-indigo-50 font-semibold rounded-full  hover:bg-indigo-700 hover:text-indigo-50 "
       >Search</button>
-      <button onClick={(e) => handleupdate(e)} 
+      <button onClick={(e) => handlefind(e)} 
       className="flex justify-center gap-2 w-full py-2 mt-4 border-2 border-indigo-500 bg-indigo-600 bg-opacity-50 text-indigo-50 font-semibold rounded-full  hover:bg-indigo-700 hover:text-indigo-50 "
       >Find</button>
       <button onClick={(e) => handlsflag(false)} 
@@ -296,7 +327,7 @@ console.log(response)
     </button></>)}
   </form>
   {alert && (
-    <div className="text-center mt-4 text-green-200 font-semibold">
+    <div className="text-center mt-4 text-indigo-500 font-semibold">
       {alert}
     </div>
   )}

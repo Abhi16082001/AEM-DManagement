@@ -1,9 +1,11 @@
 "use client"
+import Link from "next/link";
+import { FcHome } from "react-icons/fc";
+import { FcSearch } from "react-icons/fc";
 import { useState, useEffect,Suspense,useRef } from "react";
 import { useSearchParams } from "next/navigation";
 export default function Home() {
   const cardRefs = useRef([]);
-  const [selectedId, setSelectedId] = useState(null)
   const [selid, setselid] = useState(null)
 const [eflag, seteflag] = useState(false)
 const [sflag, setsflag] = useState(false)
@@ -31,7 +33,7 @@ const fetchc = async () => {
 
 useEffect(() => {
   if(cd){ fetchc();}
-},[cd,uflag,selid]);
+},[cd,uflag]);
 
   
 const fetchs = async () => {
@@ -83,13 +85,21 @@ useEffect(() => {
               });
         const data= await response.json()
               if (data.success) {
-             setcntr(data.sr)
-             setselid(null)
-              if(data.sr.length==0){setcalert("No Matches Found !!")
+             if(!isfnd) {setcntr(data.sr)}
+             if(data.sr.length==0){setcalert("No Matches Found !!")
               setselid(null)
+          }
+          setTimeout(() => {
+           const element = document.getElementById("re-renderpls");
+           element?.scrollIntoView({ behavior: "smooth" });
+         }, 0); 
+          setselid(null)
+              if(isfnd) {setselid(data.sr[data.sr.length - 1]._id)
+                setuflag("found")
               }
-              if(isfnd) {setselid(data.sr[data.sr.length - 1]._id)}
-                setalert("Search Successful !")
+                const element = document.getElementById("re-renderpls");
+                element?.scrollIntoView({ behavior: "smooth" });
+           
                 setcalert("")
               } else {
                 setalert("No such Record !!");
@@ -100,7 +110,6 @@ useEffect(() => {
             }
           };
 
-        
 
           const handlefind = (e) => {
             handlsrch(e,true);
@@ -116,9 +125,6 @@ useEffect(() => {
             } else {
               setselid(null)
             }}
-            else{
-              setcntr(cntr)
-            }
           }, [selid, cntr]);
           
 
@@ -251,52 +257,56 @@ console.log(response)
 
       </Suspense>
   <div className="flex-col justify-items-center space-y-2 p-1 ">
-  <div>
-  <button  onClick={() => handlsflag(true)}>search</button>
+  <div className="bg-blue-100 rounded-full w-full p-1 flex flex-row justify-evenly sm:justify-between sm:px-10 ">
+  <button className="bg-blue-300 rounded-full p-2 hover:bg-blue-400" onClick={() => handlsflag(true)}>  <FcSearch size={30} />  </button>
+  <Link className="bg-blue-300 rounded-full p-2 hover:bg-blue-400" href="/menu"><FcHome  size={30}/></Link>
  </div>
- <div className="bg-gradient-to-r from-indigo-400 to-purple-300 w-11/12 lg:w-4/5  text-sm lg:text-lg flex flex-col md:flex-row md:justify-between  font-serif font-semibold  p-2  rounded-md">
+ <div className="bg-gradient-to-r from-indigo-600 to-purple-500 text-emerald-100 w-full text-sm lg:text-lg flex flex-col md:flex-row md:justify-between  font-serif font-semibold  p-2  rounded-md">
  <p> Contractor ID: {cd?(<>{cd.cid} </>):"Loading..."} </p>
  <p>Ctr/C's Name: {cd?(<>{cd.name} </>):"Loading..."} </p>
  <p>Previous Balance: {cd?(<>{cd.pbal} </>):"Loading..."} </p>
  </div>
  
 
-<div className="container h-[75vh] bg-blue-500 p-2 rounded-lg bg-opacity-20 w-11/12 lg:w-4/5 space-y-2 overflow-y-scroll">
-{cntr.map((b,index) => (
+<div id="re-renderpls" className="container h-[75vh] bg-blue-700 p-2 rounded-lg bg-opacity-30 w-full lg:w-4/5 space-y-2 overflow-y-scroll">
+
+
+               {cntr.map((b,index) => (
 <div key={b._id} ref={(el) => (cardRefs.current[index] = el)}
 className={`  transition ${
               selid === b._id
                 ? 'bg-green-100 border-green-500'
                 : ''
-            }   flex flex-col space-y-1 lg:space-y-2  text-sm lg:text-lg  bg-cyan-700 rounded-lg p-1 text-teal-200 font-mono `}>
+            }   flex flex-col space-y-1 lg:space-y-2  text-sm lg:text-lg  bg-emerald-100 rounded-lg p-1 text-emerald-800 font-mono `}>
   <div className="flex flex-col md:flex-row md:justify-between md:space-x-2">
-<div  onClick={() => handleditf(true,b)} className="flex flex-row justify-center lg:px-2 bg-cyan-200 bg-opacity-40 rounded-lg text-teal-950 hover:cursor-pointer hover:bg-opacity-30">
+<div  onClick={() => handleditf(true,b)} className="flex flex-row justify-center lg:px-2 bg-cyan-400 bg-opacity-40 rounded-lg text-teal-950 hover:cursor-pointer hover:bg-opacity-30">
   <p >{b.date}-{b.shft}</p> </div>
-<div className="flex flex-row justify-center space-x-2 border-b-2 md:border-b-0  md:px-1 border-teal-500"> <p>{b.vno}</p></div>
-<div className="flex flex-row justify-center space-x-2 border-b-2 md:border-b-0  md:px-1 border-teal-500"> <p> {b.sid}</p></div>
-<div className="flex flex-row justify-center border-b-2 md:border-b-0  md:px-1 border-teal-500"><p>{b.site}</p></div>
+<div className="flex flex-row justify-center space-x-2 border-b-2 md:border-b-0  md:px-1 border-emerald-500"> <p>{b.vno}</p></div>
+<div className="flex flex-row justify-center space-x-2 border-b-2 md:border-b-0  md:px-1 border-emerald-500"> <p> {b.sid}</p></div>
+<div className="flex flex-row justify-center border-b-2 md:border-b-0  md:px-1 border-emerald-500"><p>{b.site}</p></div>
 </div>
 <div className="flex flex-col md:flex-row md:space-x-2 md:justify-between"><div className="flex flex-row justify-center space-x-1">₹{b.rate}/{b.hrs?(<>h</>):(<>t</>)} * {b.hrs?(<>{b.hrs}h</>):(<>{b.trip}t</>)} =₹{b.odtot}</div>
-<div onClick={() => deletec(true,b._id)} className=" flex flex-row md:w-3/4 px-1 justify-center md:px-2 bg-red-200 bg-opacity-80 rounded-lg text-teal-900 hover:cursor-pointer hover:bg-opacity-60">{b.rmrk}
+<div onClick={() => deletec(true,b._id)} className=" flex flex-row md:w-3/4 px-1 justify-center md:px-2 bg-red-300 bg-opacity-80 rounded-lg text-teal-900 hover:cursor-pointer hover:bg-opacity-60">{b.rmrk}
 
 </div>
 </div>
 { (dflag && chck===b._id)? (<><div className="flex flex-row justify-evenly "><p className="text-red-300">Deletion ! Sure ?</p><button  onClick={() => handledel(b._id)} className="bg-red-500 px-2 md:px-10 rounded-full hover:bg-opacity-80">Yes</button > <button onClick={() => deletec(false,b._id)} className="bg-indigo-500 rounded-full px-3 md:px-10 hover:bg-opacity-80">No</button></div></>):(<></>)}
 </div>
  ))}
+             
 
 {dalert && (
-    <div className="text-center mt-4 text-red-300 font-semibold">
+    <div className="text-center mt-4 text-red-600 font-semibold">
       {dalert}
     </div>
   )}
   {calert && (
-    <div className="text-center mt-4 text-red-200 font-semibold">
+    <div className="text-center mt-4 text-emerald-200 font-semibold">
       {calert}
     </div>
   )}
 </div>
- <div className=" border-2 p-2 border-indigo-500 rounded-md w-full sm:w-4/5">
+ <div className=" border-2 p-2 border-indigo-300 bg-indigo-200 rounded-md w-full sm:w-4/5">
 <form onSubmit={addcntr} className="   space-y-3">
 <div className="text-center text-sm lg:text-lg font-semibold font-mono bg-indigo-500 bg-opacity-50 p-2 rounded-lg  ">Add Details: </div>
 
@@ -314,7 +324,7 @@ className={`  transition ${
     Shift:
     </label>
   <select  onChange={onchange}  name="shft" id="shft" value={cmodel?.shft || ""}
-      className=" w-full px-4 py-2 border border-indigo-500  bg-indigo-600 bg-opacity-20 rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-600"
+     className="flex justify-center gap-2 w-full py-2 mt-4 border-2 border-indigo-500 bg-indigo-300 bg-opacity-5 text-indigo-500 font-semibold rounded-full "
        >
         <option value="">Select Shift</option>
   <option value="D">Day</option>
@@ -325,13 +335,13 @@ className={`  transition ${
     Vehicle:
     </label>
 <select  onChange={onchange}  name="vno" id="vno" value={cmodel?.vno || ""}
-       className=" w-full px-4 py-2 border border-indigo-500  bg-indigo-600 bg-opacity-20 rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-600"
+      className="flex justify-center gap-2 w-full py-2 mt-4 border-2 border-indigo-500 bg-indigo-300 bg-opacity-5 text-indigo-500 font-semibold rounded-full "
        >
         <option value="">Select the Vehicle</option>
 {vhcl.map((b) => (
     
     <option key={b.vno} value={b.vtype==="Hyva"?`H:${b.vno}`:(b.vtype==="JCB"?`J:${b.vno}`:`P:${b.vno}`)}
-       className='space-y-2 sm:space-y-3 xs:flex justify-between text-teal-950 text-lg font-semibold bg-gradient-to-r from-cyan-400 to-indigo-300 rounded-md p-4 shadow-lg hover:cursor-pointer hover:opacity-80 container mx-auto'
+      className='space-y-2 sm:space-y-3 xs:flex justify-between text-teal-950 text-lg font-semibold bg-indigo-300 rounded-md p-4 shadow-lg  hover:text-indigo-50 hover:bg-indigo-400 hover:cursor-pointer hover:opacity-80 container mx-auto'
        >{b.vtype} : {b.vno}
    </option>
   ))}
@@ -342,13 +352,13 @@ className={`  transition ${
     Driver/Operator Name:
     </label>
 <select  onChange={onchange}  name="sid" id="sid" value={cmodel?.sid || ""}
-       className=" w-full px-4 py-2 border border-indigo-500  bg-indigo-600 bg-opacity-20 rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-600"
+      className="flex justify-center gap-2 w-full py-2 mt-4 border-2 border-indigo-500 bg-indigo-300 bg-opacity-5 text-indigo-500 font-semibold rounded-full "
        >
         <option value="">Select who drove Vehicle</option>
 {stf.map((b) => (
     
     <option key={b.sid} value={`${b.sid}:${b.name}`}
-       className=" w-full px-4 py-2 border border-indigo-500  bg-indigo-600 bg-opacity-20 rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-600"
+      className='space-y-2 sm:space-y-3 xs:flex justify-between text-teal-950 text-lg font-semibold bg-indigo-300 rounded-md p-4 shadow-lg  hover:text-indigo-50 hover:bg-indigo-400 hover:cursor-pointer hover:opacity-80 container mx-auto'
        >{b.srole} : {b.name}
    </option>
   ))}
@@ -458,7 +468,7 @@ className={`  transition ${
 
   </form>
   {alert && (
-    <div className="text-center mt-4 text-indigo-200 font-semibold">
+    <div className="text-center mt-4 text-indigo-500 font-semibold">
       {alert}
     </div>
   )}</div>
