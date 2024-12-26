@@ -4,7 +4,6 @@ import { TbEditCircle } from "react-icons/tb";
 import { useSearchParams } from "next/navigation";
 import { RiDeleteBin5Line } from "react-icons/ri";
 export default function Page() {
-const [alld, setalld] = useState([])
 const [alls, setalls] = useState([])
 const [allv, setallv] = useState([])
 const [allc, setallc] = useState([])
@@ -43,14 +42,13 @@ const data= await response.json()
         settalert("")
         setvalert("")
         setcalert("")
-        setalld([...fc,...ft,...fv,...fs])
+        setalert("")
         setallc(fc)
         setallv(fv)
         setallt(ft)
         setalls(fs)
         if(fc.length==0 && fs.length==0 && fv.length==0 && ft.length==0)
         {setalert("NO DETAILS TO SHOW !!")
-          console.log(alld)
         }
         if(fs.length==0)
           {setsalert("NO STAFF DETAILS TO SHOW !!")
@@ -70,10 +68,10 @@ const data= await response.json()
                 }
         setalrt("")
       } else {
-        setalert("Error in Fetching Details.");
+        setalrt("Error in Fetching Details.");
       }
     } catch (error) {
-      setalert("Error in Fetching Details.");
+      setalrt("Error in Fetching Details.");
       console.error('Error:', error);
     }
   };
@@ -81,19 +79,23 @@ const data= await response.json()
    
  return (
   <>
-
-Daily Summary !!
+<div className="flex-col justify-items-center space-y-2 p-1 ">
+<p className="text-center bg-indigo-500 text-indigo-100 p-3 rounded-md w-full font-mono font-extrabold text-lg"> Daily Summary !!</p>
+  <div className="w-full sm:w-3/5 border-2 border-indigo-500 p-2 rounded-md ">
 <form onSubmit={fetchall} className="space-y-4">
-<label htmlFor="date" className="block text-md font-semibold text-green-500">
+<label htmlFor="date" className="block text-md font-semibold text-indigo-800">
       Date:
     </label>
     <input
       pattern="^(?!\s*$).+" title="This field cannot be empty or just spaces" value={dmodel?.date || ""} required type="date" name="date" id="date" 
       onChange={onchange}       placeholder="Enter Date"
-      className=" w-full px-4 py-2 border border-green-500 bg-green-600 bg-opacity-20 rounded-full focus:outline-none focus:ring-2 focus:ring-green-600"
+      className=" w-full px-4 py-2 border border-indigo-500 bg-indigo-600 bg-opacity-20 rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-600"
 
     />
-<select onChange={onchange} name="dtype" id="dtype" value={dmodel?.dtype || ""}>
+    <label htmlFor="dtype" className="block text-md font-semibold text-indigo-800">
+      Data Type:
+    </label>
+<select onChange={onchange} className="bg-indigo-300 w-full rounded-full p-2 border-2 border-indigo-400" name="dtype" id="dtype" value={dmodel?.dtype || ""}>
     <option value="">Choose Data type</option>
   <option value="staff">Staff</option>
   <option value="vehicle">Vehicle</option>
@@ -104,82 +106,116 @@ Daily Summary !!
 
 <button
       type="submit"
-      className="flex justify-center gap-2 w-full py-2 mt-4 border-2 border-green-500 bg-green-600 bg-opacity-5 text-green-500 font-semibold rounded-full hover:bg-green-700 hover:text-green-50 ">
+      className="flex justify-center gap-2 w-full py-2 mt-4 border-2 border-indigo-500 bg-indigo-600 bg-opacity-50 text-indigo-50 font-semibold rounded-full hover:bg-indigo-700 hover:text-indigo-50 ">
         Fetch Data</button>
 </form>
- 
-{(dmodel?.dtype==="All")?(<> {alld.map((b) => (
-        <div key={b._id}
-            className='space-y-2 sm:space-y-3 xs:flex justify-between text-teal-950 text-lg font-semibold bg-gradient-to-r from-cyan-400 to-green-300 rounded-md p-4 shadow-lg hover:cursor-pointer hover:opacity-80 container mx-auto'>      
-           <span  className="inline-block w-full sm:w-3/5"> {b.date} -- {b.rmrk} </span>  
-         
-       </div>
+</div>
+<p className="text-center bg-indigo-500 text-indigo-100 p-3 rounded-md w-full font-mono font-extrabold text-lg">Details of Specific Day:</p>
+<div className="container h-[90vh] overflow-y-scroll bg-blue-500 bg-opacity-50 space-y-2 w-full sm:w-11/12 p-2 py-4 rounded-md ">
+
+{(dmodel?.dtype==="staff" || dmodel?.dtype==="All")?(<> {alls.map((b) => (
+    <div key={b._id}  className="flex flex-col space-y-1  md:space-y-2  text-sm lg:text-lg  bg-sky-200 rounded-lg p-1 text-sky-900 font-mono ">
+<div className="flex flex-col md:flex-row md:justify-between md:space-x-2">
+<div   className="flex flex-row justify-center lg:px-2 bg-cyan-500 bg-opacity-40 rounded-lg text-teal-950 hover:cursor-pointer hover:bg-opacity-30">
+{b.date} </div>
+<div className="flex flex-row justify-center space-x-2   md:px-1 "> {b.amount}</div>
+
+
+<div className="flex flex-row md:w-1/2 px-1 justify-center md:px-2 bg-red-200 bg-opacity-80 rounded-lg text-teal-900 hover:cursor-pointer hover:bg-opacity-60">{b.rmrk}
+
+</div>
+</div>
+
+</div> 
       ))}
-        {alert && (
-    <div className="text-center mt-4 text-green-200 font-semibold">
-      {alert}
-    </div>
-  )}
-      </>):""}
-{(dmodel?.dtype==="staff")?(<> {alls.map((b) => (
-        <div key={b._id}
-            className='space-y-2 sm:space-y-3 xs:flex justify-between text-teal-950 text-lg font-semibold bg-gradient-to-r from-cyan-400 to-green-300 rounded-md p-4 shadow-lg hover:cursor-pointer hover:opacity-80 container mx-auto'>      
-           <span  className="inline-block w-full sm:w-3/5"> {b.date} -- {b.rmrk} </span>  
-      
-       </div>
-      ))}
-           {salert && (
-    <div className="text-center mt-4 text-green-200 font-semibold">
+           {(salert&& dmodel?.dtype!="All") && (
+    <div className="text-center mt-4 text-sky-200 font-semibold">
       {salert}
     </div>
   )}
       </>):""}
-{(dmodel?.dtype==="vehicle")?(<> {allv.map((b) => (
-        <div key={b._id}
-            className='space-y-2 sm:space-y-3 xs:flex justify-between text-teal-950 text-lg font-semibold bg-gradient-to-r from-cyan-400 to-green-300 rounded-md p-4 shadow-lg hover:cursor-pointer hover:opacity-80 container mx-auto'>      
-           <span  className="inline-block w-full sm:w-3/5"> {b.date} -- {b.rmrk} </span>  
-      
-       </div>
+{(dmodel?.dtype==="vehicle"|| dmodel?.dtype==="All")?(<> {allv.map((b) => (
+        <div key={b._id} className= {" flex flex-col  lg:space-y-2  text-sm lg:text-lg  bg-teal-100 rounded-lg p-1 text-teal-800 font-mono "}>
+        <div className="flex flex-col md:flex-row md:justify-between md:space-x-2">
+        <div  className="flex flex-row justify-center lg:px-2 bg-cyan-400 bg-opacity-40 rounded-lg text-teal-950 hover:cursor-pointer hover:bg-opacity-30">
+        <p >{b.date}-{b.shft}</p> </div>
+        <div className="flex flex-row justify-center space-x-2 border-b-2 md:border-b-0  md:px-1 border-teal-500"> <p> {b.sid}</p></div>
+        <div className="flex flex-row justify-center border-b-2 md:border-b-0  md:px-1 border-teal-500"><p>{b.site}</p></div>
+        </div>
+        <div className="flex flex-col md:flex-row md:space-x-2 md:justify-between"><div className="flex flex-row justify-center space-x-1"><p>₹{b.rate}/{b.hrs?(<>h</>):(<>t</>)} -- {b.hrs?(<>{b.hrs} hrs</>):(<>{b.trip} trp</>)}</p></div>
+        <div  className="flex flex-row md:w-3/4 px-1 justify-center md:px-2 bg-red-300 bg-opacity-80 rounded-lg text-teal-900 hover:cursor-pointer hover:bg-opacity-60">{b.rmrk}
+        
+        </div>
+        </div>
+        
+        </div>
       ))}
-           {valert && (
-    <div className="text-center mt-4 text-green-200 font-semibold">
+           {(valert&& dmodel?.dtype!="All") && (
+    <div className="text-center mt-4 text-teal-300 font-semibold">
       {valert}
     </div>
   )}
       </>):""}
-{(dmodel?.dtype==="contractor")?(<> {allc.map((b) => (
-        <div key={b._id}
-            className='space-y-2 sm:space-y-3 xs:flex justify-between text-teal-950 text-lg font-semibold bg-gradient-to-r from-cyan-400 to-green-300 rounded-md p-4 shadow-lg hover:cursor-pointer hover:opacity-80 container mx-auto'>      
-           <span  className="inline-block w-full sm:w-3/5"> {b.date} -- {b.rmrk} </span>  
-       
-       </div>
+{(dmodel?.dtype==="contractor" || dmodel?.dtype==="All")?(<> {allc.map((b) => (
+      <div key={b._id} 
+      className="  flex flex-col space-y-1 lg:space-y-2  text-sm lg:text-lg  bg-emerald-100 rounded-lg p-1 text-emerald-800 font-mono ">
+        <div className="flex flex-col md:flex-row md:justify-between md:space-x-2">
+      <div className="flex flex-row justify-center lg:px-2 bg-cyan-400 bg-opacity-40 rounded-lg text-teal-950 hover:cursor-pointer hover:bg-opacity-30">
+        <p >{b.date}-{b.shft}</p> </div>
+      <div className="flex flex-row justify-center space-x-2 border-b-2 md:border-b-0  md:px-1 border-emerald-500"> <p>{b.vno}</p></div>
+      <div className="flex flex-row justify-center space-x-2 border-b-2 md:border-b-0  md:px-1 border-emerald-500"> <p> {b.sid}</p></div>
+      <div className="flex flex-row justify-center border-b-2 md:border-b-0  md:px-1 border-emerald-500"><p>{b.site}</p></div>
+      </div>
+      <div className="flex flex-col md:flex-row md:space-x-2 md:justify-between"><div className="flex flex-row justify-center space-x-1">₹{b.rate}/{b.hrs?(<>h</>):(<>t</>)} * {b.hrs?(<>{b.hrs}h</>):(<>{b.trip}t</>)} =₹{b.odtot}</div>
+      <div  className=" flex flex-row md:w-3/4 px-1 justify-center md:px-2 bg-red-300 bg-opacity-80 rounded-lg text-teal-900 hover:cursor-pointer hover:bg-opacity-60">{b.rmrk}
+      
+      </div>
+      </div>
+     
+      </div>
       ))}
-          {calert && (
-    <div className="text-center mt-4 text-green-200 font-semibold">
+          {(calert&& dmodel?.dtype!="All") && (
+    <div className="text-center mt-4 text-emerald-200 font-semibold">
       {calert}
     </div>
   )}
       </>):""}
-{(dmodel?.dtype==="tender")?(<> {allt.map((b) => (
-        <div key={b._id}
-            className='space-y-2 sm:space-y-3 xs:flex justify-between text-teal-950 text-lg font-semibold bg-gradient-to-r from-cyan-400 to-green-300 rounded-md p-4 shadow-lg hover:cursor-pointer hover:opacity-80 container mx-auto'>      
-           <span  className="inline-block w-full sm:w-3/5"> {b.date} -- {b.rmrk} </span>  
-        
-       </div>
+{(dmodel?.dtype==="tender" || dmodel?.dtype==="All")?(<> {allt.map((b) => (
+      <div key={b._id}  className= " flex flex-col space-y-1  lg:space-y-2  text-sm lg:text-lg  bg-violet-300 rounded-lg p-1 text-violet-800 font-mono ">
+<div className="flex flex-col md:flex-row md:justify-between md:space-x-2">
+<div   className="flex flex-row justify-center lg:px-2 bg-cyan-300 bg-opacity-40 rounded-lg text-teal-950 hover:cursor-pointer hover:bg-opacity-30">
+<p >{b.date}-{b.shft}</p> </div>
+<div className="flex flex-row justify-center space-x-2 border-b-2 md:border-b-0  md:px-1 border-violet-500"> <p>{b.vno}</p></div>
+<div className="flex flex-row justify-center space-x-2 border-b-2 md:border-b-0  md:px-1 border-violet-500"> <p> {b.sid}</p></div>
+<div className="flex flex-row justify-center border-b-2 md:border-b-0  md:px-1 border-violet-500"><p>{b.site}</p></div>
+</div>
+<div className="flex flex-col md:flex-row md:space-x-2 md:justify-between"><div className="flex flex-row justify-center space-x-1">₹{b.rate}/{b.hrs?(<>h</>):(<>t</>)} * {b.hrs?(<>{b.hrs}h</>):(<>{b.trip}t</>)} =₹{b.odtot}</div>
+<div className="flex flex-row md:w-3/4 px-1 justify-center md:px-2 bg-red-200 bg-opacity-80 rounded-lg text-teal-900 hover:cursor-pointer hover:bg-opacity-60">{b.rmrk}
+</div></div>
+
+</div>
       ))}
-         {talert && (
-    <div className="text-center mt-4 text-green-200 font-semibold">
+         {(talert && dmodel?.dtype!="All") && (
+    <div className="text-center mt-4 text-violet-300 font-semibold">
       {talert}
     </div>
   )}
       </>):""}
 
 {alrt && (
-    <div className="text-center mt-4 text-green-200 font-semibold">
+    <div className="text-center mt-4 text-indigo-200 font-semibold">
       {alrt}
     </div>
   )}
 
+{(alert&& dmodel?.dtype==="All") && (
+    <div className="text-center mt-4 text-indigo-200 font-semibold">
+      {alert}
+    </div>
+  )}
+
+  </div>
+</div>
   </>
  )
 }

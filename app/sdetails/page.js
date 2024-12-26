@@ -50,6 +50,7 @@ useEffect(() => {
         setsflag(false)
         seteflag(bul)
         setsmodel(dtls)
+        setselid(null)
       }
 
 
@@ -63,21 +64,21 @@ useEffect(() => {
             });
       const data= await response.json()
             if (data.success) {
-           setstaff(data.sr)
-           if(data.sr.length==0){setsalert("No Matches Found !!")
+              if(!isfnd) { setstaff(data.sr); setalert("Search Successful !!")}
+           if(data.sr.length==0){
+            if(!isfnd){setsalert("No Matches Found !!")}
             setselid(null)
+            setalert("No matches Found !!")
            }
-           setTimeout(() => {
-            const element = document.getElementById("re-renderpls");
-            element?.scrollIntoView({ behavior: "smooth" });
-          }, 0); 
+          
            setselid(null)
-               if(isfnd) {setselid(data.sr[data.sr.length - 1]._id)
+               if(isfnd && data.sr.length!=0) {setselid(data.sr[data.sr.length - 1]._id)
                  setuflag("found")
+                 setalert("Found it !!")
                }
                  const element = document.getElementById("re-renderpls");
                  element?.scrollIntoView({ behavior: "smooth" });
-              setalert("Search Successful !")
+            
             } else {
               setalert("No such Record !!");
             }
@@ -112,6 +113,7 @@ useEffect(() => {
         seteflag(false)
         setsflag(bul)
         setsmodel({})
+        setselid(null)
         if(!bul){
           setuflag("srch")
           setsalert("Loading...")
@@ -235,9 +237,9 @@ console.log(response)
 {staff.map((b,index) => (
 <div key={b._id} ref={(el) => (cardRefs.current[index] = el)} className={`  transition ${
               selid === b._id
-                ? 'bg-indigo-100 border-indigo-500'
-                : ''
-            }  flex flex-col space-y-1  md:space-y-2  text-sm lg:text-lg  bg-sky-200 rounded-lg p-1 text-sky-900 font-mono `}>
+                ? 'bg-white border-indigo-900 border-2'
+                : 'bg-sky-200'
+            }  flex flex-col space-y-1  md:space-y-2  text-sm lg:text-lg   rounded-lg p-1 text-sky-900 font-mono `}>
 <div className="flex flex-col md:flex-row md:justify-between md:space-x-2">
 <div  onClick={() => handleditf(true,b)} className="flex flex-row justify-center lg:px-2 bg-cyan-500 bg-opacity-40 rounded-lg text-teal-950 hover:cursor-pointer hover:bg-opacity-30">
   {b.date} </div>
@@ -248,7 +250,7 @@ console.log(response)
 
 </div>
 </div>
-{ (dflag && chck===b._id)? (<><div className="flex flex-row justify-evenly "><p className="text-red-300">Deletion ! Sure ?</p><button  onClick={() => handledel(b._id)} className="bg-red-500 px-2 md:px-10  rounded-full hover:bg-opacity-80">Yes</button > <button onClick={() => deletes(false,b._id)} className="bg-indigo-500 rounded-full px-3 md:px-10 hover:bg-opacity-80">No</button></div></>):(<></>)}
+{ (dflag && chck===b._id)? (<><div className="flex flex-row justify-evenly "><p className="text-red-700">Deletion ! Sure ?</p><button  onClick={() => handledel(b._id)} className="bg-red-500 px-2 md:px-10 text-red-200 rounded-full hover:bg-opacity-80">Yes</button > <button onClick={() => deletes(false,b._id)} className="bg-indigo-500 text-indigo-200 rounded-full px-3 md:px-10 hover:bg-opacity-80">No</button></div></>):(<></>)}
 </div>
  ))}
 

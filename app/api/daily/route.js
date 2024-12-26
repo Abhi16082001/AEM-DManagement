@@ -32,3 +32,38 @@ export async function GET(request) {
       // await client.close();
     }
   }
+
+
+
+   export async function PUT(request) {
+        // Replace the uri string with your connection string.
+        
+        let dtls= await request.json()
+       const pwd=dtls.pwd
+       const dtpe=dtls.dtype
+        const client = await getClient();
+          try {
+            const database = client.db('AnilEarthMover');
+            const collection = database.collection('alldata');
+          
+                const res=await collection.updateOne(
+                  { dtype: dtpe},
+                  { $set: { details: pwd } }
+                );
+          
+            if (res.modifiedCount === 0 )  {
+              return NextResponse.json({ ok: false, message: 'Password is same as before, NOT updated !' });
+            }
+            console.log("Updated sucessfully",res);
+          return NextResponse.json({ ok: true, modifiedCount: res.modifiedCount });
+          } 
+          catch (error) {
+            console.error("Failed to update the password:", error);
+            return NextResponse.json({ ok: false, error: error.message });
+          }
+          finally {
+            // Ensures that the client will close when you finish/error
+            // await client.close();
+          }
+        }
+  

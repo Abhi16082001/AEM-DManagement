@@ -85,22 +85,21 @@ useEffect(() => {
               });
         const data= await response.json()
               if (data.success) {
-             if(!isfnd) {setcntr(data.sr)}
+             if(!isfnd) {setcntr(data.sr) ; setalert("Search Successful !!")}
              if(data.sr.length==0){setcalert("No Matches Found !!")
               setselid(null)
+              setalert("No matches Found !!")
           }
-          setTimeout(() => {
-           const element = document.getElementById("re-renderpls");
-           element?.scrollIntoView({ behavior: "smooth" });
-         }, 0); 
+        
           setselid(null)
-              if(isfnd) {setselid(data.sr[data.sr.length - 1]._id)
+              if(isfnd && data.sr.length!=0) {setselid(data.sr[data.sr.length - 1]._id)
                 setuflag("found")
+                setalert("Found it !!")
               }
                 const element = document.getElementById("re-renderpls");
                 element?.scrollIntoView({ behavior: "smooth" });
-           
-                setcalert("")
+          
+               
               } else {
                 setalert("No such Record !!");
               }
@@ -206,6 +205,7 @@ useEffect(() => {
         setsflag(false)
         seteflag(bul)
         setcmodel(dtls)
+        setselid(null)
       }
 
       const handlsflag = async (bul) => {
@@ -216,6 +216,7 @@ useEffect(() => {
         seteflag(false)
         setsflag(bul)
         setcmodel({})
+        setselid(null)
         if(!bul){
           setuflag("srch")
           setcalert("Loading...")
@@ -275,9 +276,9 @@ console.log(response)
 <div key={b._id} ref={(el) => (cardRefs.current[index] = el)}
 className={`  transition ${
               selid === b._id
-                ? 'bg-green-100 border-green-500'
-                : ''
-            }   flex flex-col space-y-1 lg:space-y-2  text-sm lg:text-lg  bg-emerald-100 rounded-lg p-1 text-emerald-800 font-mono `}>
+                ? 'bg-white border-indigo-900 border-2'
+                : ' bg-emerald-100 '
+            }   flex flex-col space-y-1 lg:space-y-2  text-sm lg:text-lg rounded-lg p-1 text-emerald-800 font-mono `}>
   <div className="flex flex-col md:flex-row md:justify-between md:space-x-2">
 <div  onClick={() => handleditf(true,b)} className="flex flex-row justify-center lg:px-2 bg-cyan-400 bg-opacity-40 rounded-lg text-teal-950 hover:cursor-pointer hover:bg-opacity-30">
   <p >{b.date}-{b.shft}</p> </div>
@@ -290,7 +291,7 @@ className={`  transition ${
 
 </div>
 </div>
-{ (dflag && chck===b._id)? (<><div className="flex flex-row justify-evenly "><p className="text-red-300">Deletion ! Sure ?</p><button  onClick={() => handledel(b._id)} className="bg-red-500 px-2 md:px-10 rounded-full hover:bg-opacity-80">Yes</button > <button onClick={() => deletec(false,b._id)} className="bg-indigo-500 rounded-full px-3 md:px-10 hover:bg-opacity-80">No</button></div></>):(<></>)}
+{ (dflag && chck===b._id)? (<><div className="flex flex-row justify-evenly "><p className="text-red-700">Deletion ! Sure ?</p><button  onClick={() => handledel(b._id)} className="bg-red-500 text-red-200 px-2 md:px-10 rounded-full hover:bg-opacity-80">Yes</button > <button onClick={() => deletec(false,b._id)} className="bg-indigo-500 text-indigo-200 rounded-full px-3 md:px-10 hover:bg-opacity-80">No</button></div></>):(<></>)}
 </div>
  ))}
              

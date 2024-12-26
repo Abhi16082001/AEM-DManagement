@@ -167,7 +167,7 @@ const data= await response.json()
 
 <div className="container h-[75vh] bg-blue-500 p-2 rounded-lg bg-opacity-20 w-11/12 lg:w-4/5 space-y-2 overflow-y-scroll">
 {calert && (
-    <div className="text-center mt-4 text-emerald-500 font-semibold">
+    <div className="text-center mt-4 text-emerald-200 font-semibold">
       {calert}
     </div>
   )}

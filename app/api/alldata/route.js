@@ -18,6 +18,7 @@ export async function GET(request) {
       const nstf = await collection.findOne(query);
 
   const result=nstf.details
+  console.log(result)
       return NextResponse.json({success:true,result})
     } finally {
       // Ensures that the client will close when you finish/error
