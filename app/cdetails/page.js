@@ -4,7 +4,7 @@ import { FcHome } from "react-icons/fc";
 import { FcSearch } from "react-icons/fc";
 import { useState, useEffect,Suspense,useRef } from "react";
 import { useSearchParams } from "next/navigation";
-export default function Home() {
+export default function Page() {
   const cardRefs = useRef([]);
   const [selid, setselid] = useState(null)
 const [eflag, seteflag] = useState(false)
@@ -264,7 +264,7 @@ console.log(response)
  </div>
  <div className="bg-gradient-to-r from-indigo-600 to-purple-500 text-emerald-100 w-full text-sm lg:text-lg flex flex-col md:flex-row md:justify-between  font-serif font-semibold  p-2  rounded-md">
  <p> Contractor ID: {cd?(<>{cd.cid} </>):"Loading..."} </p>
- <p>Ctr/C's Name: {cd?(<>{cd.name} </>):"Loading..."} </p>
+ <p>Ctr/C Name: {cd?(<>{cd.name} </>):"Loading..."} </p>
  <p>Previous Balance: {cd?(<>{cd.pbal} </>):"Loading..."} </p>
  </div>
  
