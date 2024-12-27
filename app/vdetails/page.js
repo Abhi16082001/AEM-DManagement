@@ -4,8 +4,6 @@ import { FcHome } from "react-icons/fc";
 import { FcSearch } from "react-icons/fc";
 import { useSearchParams } from "next/navigation";
 import { useState ,useEffect, Suspense,useRef} from "react"
-import { TbEditCircle } from "react-icons/tb";
-import { RiDeleteBin5Line } from "react-icons/ri";
 export default function Page() {
   const cardRefs = useRef([]);
   const [selid, setselid] = useState(null)

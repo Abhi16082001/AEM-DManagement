@@ -2,9 +2,7 @@
 import { FcHome } from "react-icons/fc";
 import { FcSearch } from "react-icons/fc";
 import { useState, useEffect,Suspense,useRef } from "react";
-import { TbEditCircle } from "react-icons/tb";
 import { useSearchParams } from "next/navigation";
-import { RiDeleteBin5Line } from "react-icons/ri";
 import Link from "next/link";
 export default function Page() {
   const cardRefs = useRef([]);

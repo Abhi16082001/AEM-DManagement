@@ -3,8 +3,6 @@ import React from 'react'
 import { GiTowTruck } from "react-icons/gi";
 import Link from 'next/link'
 import { GiEarthAmerica } from "react-icons/gi";
-import { BsFillBuildingsFill } from "react-icons/bs";
-import { TbLogout2 } from "react-icons/tb";
 import { RiLogoutCircleFill } from "react-icons/ri";
 const Navbar = () => {
 

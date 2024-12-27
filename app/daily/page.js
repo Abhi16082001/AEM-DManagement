@@ -1,8 +1,5 @@
 "use client"
-import { useState, useEffect,Suspense } from "react";
-import { TbEditCircle } from "react-icons/tb";
-import { useSearchParams } from "next/navigation";
-import { RiDeleteBin5Line } from "react-icons/ri";
+import { useState } from "react";
 export default function Page() {
 const [alls, setalls] = useState([])
 const [allv, setallv] = useState([])

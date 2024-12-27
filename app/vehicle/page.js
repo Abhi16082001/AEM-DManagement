@@ -1,8 +1,6 @@
 "use client"
 import { useRouter } from 'next/navigation';
 import { useState ,useEffect} from "react"
-import { TbEditCircle } from "react-icons/tb";
-import { RiDeleteBin5Line } from "react-icons/ri";
 import { MdDeleteForever } from "react-icons/md";
 import { RiEditCircleFill } from "react-icons/ri";
 export default function Page() {
