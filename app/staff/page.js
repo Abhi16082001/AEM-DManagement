@@ -10,7 +10,7 @@ export default function Page() {
   const [chck, setchck] = useState("")
   const [dalert, setdalert] = useState("")
   const [eflag, seteflag] = useState(false)
-    const [srle, setsrle] = useState("")
+    const [srle, setsrle] = useState("All")
     const [smodel, setsmodel] = useState({})
     const [alert, setalert] = useState("")
     const [stf, setstf] = useState([])
@@ -175,11 +175,11 @@ console.log(data)
   <div className="bg-gradient-to-r from-indigo-600 to-purple-300  w-11/12 lg:w-4/5  text-sm lg:text-lg flex flex-col sm:flex-row sm:justify-center sm:gap-8  font-serif font-semibold  p-2  rounded-md">
   <p className='text-center'>Menu for Staff  !! </p>
   <select className='rounded-full sm:p-1 p-2 bg-indigo-200' onChange={cstf} name="srole" id="srole">
-    <option value="">Choose Staff type</option>
+ 
+  <option value="All">All</option>
   <option value="Driver">Driver</option>
   <option value="Operator">Operator</option>
   <option value="Helper">Helper</option>
-  <option value="All">All</option>
 </select>
 
 </div>

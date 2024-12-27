@@ -29,8 +29,9 @@ const [alert, setalert] = useState("")
 
  return (
   <>
-  This is the app for company Anil Earth Mover !!
-
+  <div className='flex flex-col items-center w-full space-y-10'>
+  <p className='text-center bg-indigo-500 bg-opacity-50 w-full xs:text-3xl font-mono p-3 rounded-lg font-extrabold'>!! Anil Earth Mover !!</p>
+<div className=' rounded-lg p-3 w-full sm:w-3/5 '>
   <form onSubmit={fetchv} className="space-y-4">
 <label htmlFor="pwd" className="block text-md font-semibold text-indigo-800">
       Enter Password:
@@ -54,7 +55,8 @@ const [alert, setalert] = useState("")
       {alert}
     </div>
   )}
-
+</div>
+</div>
   </>
  )
 }

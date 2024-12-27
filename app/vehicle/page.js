@@ -10,7 +10,7 @@ export default function Page() {
   const [dalert, setdalert] = useState("")
   const [chck, setchck] = useState("")
   const [eflag, seteflag] = useState(false)
-    const [vtpe, setvtpe] = useState("")
+    const [vtpe, setvtpe] = useState("All")
     const [vmodel, setvmodel] = useState({})
     const [alert, setalert] = useState("")
     const [vhcl, setvhcl] = useState([])
@@ -170,11 +170,11 @@ const data= await response.json()
   <div className="bg-gradient-to-r from-indigo-600 to-purple-300 w-11/12 lg:w-4/5  text-sm sm:text-lg flex flex-col sm:flex-row sm:justify-center sm:gap-8  font-serif font-semibold  p-2  rounded-md">
   <p className='text-center'>Menu for Vehicles !! </p>
   <select className='rounded-full sm:p-1 p-2 bg-indigo-200' onChange={cvhcl} name="vtype" id="vtype">
-    <option value="">Choose Vehicle type</option>
+    
+  <option value="All">All</option>
   <option value="JCB">JCB</option>
   <option value="Hyva">Hyva</option>
   <option value="Poclain">Poclain</option>
-  <option value="All">All</option>
 </select>
 
 </div>

@@ -1,6 +1,11 @@
 "use client"
 import Link from "next/link"
 import { useState } from "react"
+import { BsFillFileEarmarkPersonFill } from "react-icons/bs";
+import { GiTruck } from "react-icons/gi";
+import { FaPeopleArrows } from "react-icons/fa";
+import { FaDailymotion } from "react-icons/fa6";
+import { HiOutlineClipboardDocumentList } from "react-icons/hi2";
 export default function Page() {
     const [pflag, setpflag] = useState(false)
     const [dmodel, setdmodel] = useState({})
@@ -42,16 +47,20 @@ export default function Page() {
 
  return (
   <>
-  <div className="flex-col justify-items-center space-y-2 p-1 ">
-    <div  >
-  Menu for Anil Earth Mover !!
-  <Link className="bg-sky-500" href='staff'>Staff</Link>
-  <Link className="bg-teal-500" href='vehicle'>Vehicle</Link>
-  <Link className="bg-emerald-500" href='contractor'>Contractor</Link>
-  <Link className="bg-violet-500" href='tender'>Tender</Link>
-  <Link className="bg-indigo-500" href='daily'>Daily Summary</Link>
+  <div className="flex-col justify-items-center  space-y-5 p-1 ">
+  <p className="text-center bg-blue-500 bg-opacity-50 rounded-lg p-2 font-serif font-extrabold text-blue-800 w-full"> Menu for Data Management for  Anil Earth Mover !!</p>
+    <div className="flex flex-col w-full space-y-5"  >
+      <div className="flex flex-col sm:flex-row sm:justify-evenly space-y-5 sm:space-y-0 ">
+  <Link className="rounded-full font-mono hover:text-sky-800 font-extrabold text-sky-950 bg-opacity-60 hover:bg-opacity-20 flex flex-row justify-evenly p-10 sm:p-20 border-4 border-sky-700 text-lg sm:text-2xl bg-sky-500" href='staff'><BsFillFileEarmarkPersonFill size={30} /><p className="text-center">Staff</p></Link>
+  <Link className="rounded-full font-mono hover:text-teal-800 font-extrabold text-teal-950 bg-opacity-60 hover:bg-opacity-20 flex flex-row justify-evenly p-10 sm:p-20 border-4 border-teal-700 text-lg sm:text-2xl bg-teal-500" href='vehicle'><GiTruck size={40} />Vehicle</Link>
+  <Link className="rounded-full font-mono hover:text-emerald-800 font-extrabold text-emerald-950 bg-opacity-60 hover:bg-opacity-20 flex flex-row justify-evenly p-10 sm:p-20 border-4 border-emerald-700 text-lg sm:text-2xl bg-emerald-500" href='contractor'><FaPeopleArrows size={30} />Contractor</Link>
   </div>
-  <div className="bg-blue-500 bg-opacity-50 p-2 justify-items-center rounded-md w-full sm:w-4/5 ">
+  <div className="flex  flex-col sm:flex-row  sm:justify-evenly space-y-5 sm:space-y-0 ">
+  <Link className="rounded-full font-mono hover:text-violet-800 font-extrabold text-violet-950 bg-opacity-60 hover:bg-opacity-20 flex flex-row justify-evenly p-10 sm:p-20 border-4 border-violet-700 text-lg sm:text-2xl bg-violet-500" href='tender'><HiOutlineClipboardDocumentList size={30} />Tender</Link>
+  <Link className="rounded-full font-mono hover:text-indigo-800 font-extrabold text-indigo-950 bg-opacity-60 hover:bg-opacity-20 flex flex-row justify-evenly p-10 sm:p-20 border-4 border-indigo-700 text-lg sm:text-2xl bg-indigo-500" href='daily'><FaDailymotion size={30} />Daily Summary</Link>
+  </div>
+  </div>
+  <div  className="bg-blue-500 bg-opacity-50 p-2 justify-items-center rounded-md w-full sm:w-4/5 ">
 
 {pflag?( <> <form onSubmit={handleupdate} className="bg-indigo-200 bg-opacity-50  space-y-4 w-full sm:w-4/5 p-2 rounded-lg border-2 border-indigo-700">
 <label htmlFor="pwd" className="block text-md font-semibold text-indigo-800">
