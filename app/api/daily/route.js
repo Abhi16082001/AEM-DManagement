@@ -8,13 +8,16 @@ export async function GET(request) {
   const dmdl = searchParams.get('dmodel');
   const dmodel = dmdl ? JSON.parse(decodeURIComponent(dmdl)) : null;
   console.log(dmodel)
-    const dte=dmodel.date
-  console.log(dte)
+    const frm=dmodel.from
+    const to=dmodel.to
   // Replace the uri string with your connection string.
   const client = await getClient();
     try {
       const database = client.db('AnilEarthMover');
-      const query = {date:dte  };
+      const query = { date: {
+        $gte: frm,
+        $lte: to,
+      } , };
       const cntr = database.collection('contractor');
       const fc = await cntr.find(query).toArray();
       const tndr = database.collection('tender');
