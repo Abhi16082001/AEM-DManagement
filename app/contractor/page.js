@@ -1,11 +1,15 @@
-"use client"
+"use client" 
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { FcSearch } from "react-icons/fc";
 import { useState ,useEffect} from "react"
 import { MdDeleteForever } from "react-icons/md";
 import { RiEditCircleFill } from "react-icons/ri";
 export default function Page() {
+    const [sflag, setsflag] = useState(false)
   const router = useRouter();
   const [uflag, setuflag] = useState("")
+  const [sstr, setsstr] = useState("")
   const [dflag, setdflag] = useState(false)
   const [dalert, setdalert] = useState("")
   const [chck, setchck] = useState("")
@@ -130,6 +134,23 @@ export default function Page() {
         }
       };
 
+
+      const handlsflag = async (bul) => {
+        setcalert("")
+        setcmodel({})
+        setalert("")
+        setdalert("")
+        seteflag(false)
+        setsflag(bul)
+      setsstr("")
+      }
+
+      const onschange = (e) => {
+        setsstr( e.target.value);
+        console.log(sstr)
+      };
+
+
     const addc = async (e) => {
         e.preventDefault();
         setalert("Adding Contractor...");
@@ -160,6 +181,15 @@ const data= await response.json()
  return (
   <>
   <div className="flex-col justify-items-center space-y-2 p-1 ">
+
+  <div className="bg-blue-100 rounded-full w-full p-1 flex flex-row gap-2 justify-evenly sm:justify-between sm:px-10 ">
+ {!sflag?( <button className="bg-blue-300 rounded-full p-2 hover:bg-blue-400" onClick={() => handlsflag(true)}>  <FcSearch size={30} />  </button>):""}
+ { sflag?(<><input  className='w-full px-3 rounded-full'
+ type="text" name="srch" id="srch" value={sstr? sstr :""} onChange={onschange} />
+  <button className="hover:scale-110 transition-transform duration-300" onClick={() => handlsflag(false)}>  
+  <img width="40" height="40" src="https://img.icons8.com/3d-plastilina/69/cancel--v1.png" alt="cancel--v1"/>  </button></>):""}
+ </div>
+
  <div className="bg-gradient-to-r from-indigo-600 to-purple-500 w-11/12 sm:w-4/5  text-sm sm:text-lg  text-center font-serif font-semibold  p-2  rounded-md">All Contractors:</div>
 
 
@@ -172,13 +202,17 @@ const data= await response.json()
 
   {cntr.map((b) => (
     
-        <div key={b.cid}
-            className='space-y-2 sm:space-x-2 sm:space-y-3 flex flex-col sm:flex-row sm:justify-between text-lg font-semibold bg-gradient-to-r from-emerald-700 to-emerald-800 rounded-md p-3  shadow-lg  container mx-auto'
-           ><div onClick={() => handlecdetails(b)} className='bg-emerald-200 bg-opacity-60 text-emerald-950 hover:cursor-pointer hover:opacity-80 rounded-md py-3 px-5 w-full flex flex-col sm:flex-row sm:space-x-3'>
+       <div key={b.cid}>
+              {(!(sflag) || (b.cid.toLowerCase().includes(sstr.toLowerCase()) 
+                         || b.name.toLowerCase().includes(sstr.toLowerCase())
+                         || sstr==="") )?
+              (<div className='space-y-2 sm:space-x-2 sm:space-y-3 flex flex-col sm:flex-row sm:justify-between text-lg font-semibold bg-gradient-to-r from-emerald-700 to-emerald-800 rounded-md p-3  shadow-lg  container mx-auto'>
+                 <div onClick={() => handlecdetails(b)} className='bg-emerald-200 bg-opacity-60 text-emerald-950 hover:cursor-pointer hover:opacity-80 rounded-md py-3 px-5 w-full flex flex-col sm:flex-row sm:space-x-3'>
             <span className='border-emerald-700 sm:border-b-0 border-b-2 sm:w- sm:border-r-2 sm:px-4' >{b.cid} </span> <span>{b.name}</span></div>
        <div className="  flex flex-row sm:gap-8  justify-evenly">   <button className= "   hover:bg-blue-500 bg-blue-200   p-2 rounded-full" onClick={() => handledit(b)}><RiEditCircleFill  className="text-blue-500 hover:text-blue-200"  size={30}  /></button>
        { (dflag && chck===b.cid)?(<><button onClick={() => handledel(b.cid)} className="bg-red-500 hover:bg-opacity-50 rounded-full text-red-200 md:px-4 px-2">Yes</button > <button onClick={() => deletec(false,b.cid)} className="bg-green-500 hover:bg-opacity-50 text-green-200 rounded-full md:px-4 px-2">No</button></>):(<><button className="hover:bg-fuchsia-700 bg-fuchsia-200     p-2 rounded-full " onClick={() => deletec(true,b.cid)}><MdDeleteForever className="text-fuchsia-700 hover:text-fuchsia-200"  size={30} /></button></>)}
-          </div> </div>
+          </div></div>):"" }
+          </div>
       ))}
 {dalert && (
   <div className="text-center mt-4 text-red-500 font-semibold">

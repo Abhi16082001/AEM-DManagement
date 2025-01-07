@@ -7,8 +7,8 @@ import { useSearchParams } from "next/navigation";
 export default function Page() {
   const cardRefs = useRef([]);
   const [selid, setselid] = useState(null)
+  const [sflag, setsflag] = useState(false)
 const [eflag, seteflag] = useState(false)
-const [sflag, setsflag] = useState(false)
 const [uflag, setuflag] = useState("")
 const [vhcl, setvhcl] = useState([])
 const [cntr, setcntr] = useState([])
@@ -126,7 +126,7 @@ useEffect(() => {
             }}
           }, [selid, cntr]);
           
-
+ 
 
       const handledel = async (mid) => {
         setdalert(`Deleting Data ...`)

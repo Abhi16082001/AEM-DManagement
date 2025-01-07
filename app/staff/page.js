@@ -1,9 +1,13 @@
 "use client"
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
+import { FcSearch } from "react-icons/fc";
 import { useState ,useEffect} from "react"
 import { MdDeleteForever } from "react-icons/md";
 import { RiEditCircleFill } from "react-icons/ri";
 export default function Page() {
+    const [sflag, setsflag] = useState(false)
+    const [sstr, setsstr] = useState("")
   const router = useRouter();
   const [uflag, setuflag] = useState("")
   const [dflag, setdflag] = useState(false)
@@ -138,7 +142,22 @@ export default function Page() {
         }
       }
 
-     
+
+      
+      const handlsflag = async (bul) => {
+        setsalert("")
+        setsmodel({})
+        setalert("")
+        setdalert("")
+        seteflag(false)
+        setsflag(bul)
+        setsrle("All")
+        setsstr("")
+      }
+      const onschange = (e) => {
+        setsstr( e.target.value);
+       
+      };
 
     const adds = async (e) => {
         e.preventDefault();
@@ -168,10 +187,20 @@ console.log(data)
           console.error('Error:', error);
         }
       };
-
+ 
  return (
   <>
   <div className="flex-col justify-items-center space-y-2 p-1 ">
+
+  <div className="bg-blue-100 rounded-full w-full p-1 flex flex-row justify-evenly gap-2 sm:justify-between sm:px-10 ">
+  {!sflag?( <button className="bg-blue-300 rounded-full p-2 hover:bg-blue-400" onClick={() => handlsflag(true)}>  <FcSearch size={30} />  </button>):""}
+ { sflag?(<><input className='w-full px-3 rounded-full'
+  type="text" name="srch" id="srch" value={sstr? sstr :""} onChange={onschange}/>
+  <button className="hover:scale-110 transition-transform duration-300" onClick={() => handlsflag(false)}>  
+  <img width="40" height="40" src="https://img.icons8.com/3d-plastilina/69/cancel--v1.png" alt="cancel--v1"/>
+    </button></>):""}
+ </div>
+
   <div className="bg-gradient-to-r from-indigo-600 to-purple-300  w-11/12 lg:w-4/5  text-sm lg:text-lg flex flex-col sm:flex-row sm:justify-center sm:gap-8  font-serif font-semibold  p-2  rounded-md">
   <p className='text-center'>Menu for Staff  !! </p>
   <select className='rounded-full sm:p-1 p-2 bg-indigo-200' onChange={cstf} name="srole" id="srole">
@@ -193,7 +222,10 @@ console.log(data)
     
         <div key={b.sid}>
              
-           {(b.srole===srle || srle==="All")?(<><div
+           {((!(sflag) || (b.sid.toLowerCase().includes(sstr.toLowerCase())
+            || b.name.toLowerCase().includes(sstr.toLowerCase())
+           || sstr==="") 
+           )&&(sflag || (b.srole===srle || srle==="All")))?(<><div
            className='space-y-2 sm:space-x-2 sm:space-y-3 flex flex-col sm:flex-row sm:justify-between text-teal-950 text-lg font-semibold bg-gradient-to-r from-sky-700 to-sky-800 rounded-md p-4  shadow-lg  container mx-auto'
            >
             <div onClick={() => handlesdetails(b)} className='bg-sky-300 bg-opacity-80 hover:cursor-pointer hover:opacity-80 rounded-md py-2 px-5 w-full flex flex-col sm:flex-row sm:space-x-3'>

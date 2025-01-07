@@ -1,10 +1,14 @@
 "use client"
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
+import { FcSearch } from "react-icons/fc";
 import { useState ,useEffect} from "react"
 import { MdDeleteForever } from "react-icons/md";
 import { RiEditCircleFill } from "react-icons/ri";
 export default function Page() {
-  const router = useRouter();
+    const [sflag, setsflag] = useState(false)
+    const [sstr, setsstr] = useState("")
+  const router = useRouter(); 
   const [uflag, setuflag] = useState("")
   const [dflag, setdflag] = useState(false)
   const [dalert, setdalert] = useState("")
@@ -45,7 +49,7 @@ export default function Page() {
         const a=amnt*(per/100)
         const res=amnt +a
         settmodel({
-          ...tmodel,pamt:res
+          ...tmodel,pamt:res.toString()
         });}
 
         const handleditf = async () => {
@@ -75,6 +79,22 @@ export default function Page() {
         seteflag(true)
         settmodel({...dtls,okey:dtls.tid})
       }
+
+
+
+      const handlsflag = async (bul) => {
+        settalert("")
+        settmodel({})
+        setalert("")
+        setdalert("")
+        seteflag(false)
+        setsflag(bul)
+        setsstr("")
+      }
+
+      const onschange = (e) => {
+        setsstr( e.target.value);
+      };
 
       const handleupdate = async (e) => {
         setalert("Updating Details...")
@@ -169,6 +189,16 @@ const data= await response.json()
  return (
   <>
   <div className="flex-col justify-items-center space-y-2 p-1 ">
+
+  <div className="bg-blue-100 rounded-full w-full p-1 flex flex-row gap-2 justify-evenly sm:justify-between sm:px-10 ">
+  {!sflag?( <button className="bg-blue-300 rounded-full p-2 hover:bg-blue-400" onClick={() => handlsflag(true)}>  <FcSearch size={30} />  </button>):""}
+ { sflag?(<><input className='w-full px-3 rounded-full'
+ type="text" name="srch" id="srch" value={sstr? sstr :""} onChange={onschange}/>
+  <button className="hover:scale-110 transition-transform duration-300" onClick={() => handlsflag(false)}> 
+  <img width="40" height="40" src="https://img.icons8.com/3d-plastilina/69/cancel--v1.png" alt="cancel--v1"/>
+     </button></>):""}
+ </div>
+
  <div className="bg-gradient-to-r from-indigo-600 to-purple-300 w-11/12 sm:w-4/5  text-sm sm:text-lg  text-center font-serif font-semibold  p-2  rounded-md">All Tenders:</div>
 
  <div className="container h-[75vh] bg-blue-500 p-2 rounded-lg bg-opacity-20 w-11/12 lg:w-4/5 space-y-2 overflow-y-scroll">
@@ -181,13 +211,18 @@ const data= await response.json()
 
   {tndr.map((b) => (
     
-        <div key={b.tid}
-          className='space-y-2 sm:space-x-2 sm:space-y-3 flex flex-col sm:flex-row sm:justify-between text-teal-950 text-lg font-semibold bg-gradient-to-r from-violet-700 to-violet-800 rounded-md p-4  shadow-lg  container mx-auto'
+        <div key={b.tid}>
+           { (!(sflag) || (b.tid.toLowerCase().includes(sstr.toLowerCase()) 
+           || b.td.toLowerCase().includes(sstr.toLowerCase()) 
+           || b.name.toLowerCase().includes(sstr.toLowerCase()) 
+           || sstr==="") )?
+           (<div className='space-y-2 sm:space-x-2 sm:space-y-3 flex flex-col sm:flex-row sm:justify-between text-teal-950 text-lg font-semibold bg-gradient-to-r from-violet-700 to-violet-800 rounded-md p-4  shadow-lg  container mx-auto'
            ><div onClick={() => handletdetails(b)} className='bg-violet-300 bg-opacity-80 hover:cursor-pointer hover:opacity-80 rounded-md py-2 px-5 w-full flex flex-col lg:flex-row lg:space-x-1'>
             <span className='border-violet-950 sm:border-b-0 border-b-2 sm:border-r-2 sm:p-3'  >{b.tid} </span><span className='border-teal-950 sm:border-b-0 border-b-2 sm:border-r-2 sm:p-3 sm:pl-1'> {b.td}</span><span className='lg:p-3 lg:pl-0a' > {b.name}</span > </div>
        <div className="  flex flex-row sm:gap-8  justify-evenly">   <button className= "   hover:bg-blue-700 bg-blue-200   p-2 rounded-full" onClick={() => handledit(b)}><RiEditCircleFill  className="text-blue-500 hover:text-blue-200"  size={30}  /></button>
        { (dflag && chck===b.tid)? (<><button onClick={() => handledel(b.tid)} className="bg-red-500 hover:bg-opacity-50 text-red-200 rounded-full md:px-4 px-2">Yes</button > <button onClick={() => deletet(false,b.tid)} className="bg-green-500 hover:bg-opacity-50 text-green-200 rounded-full md:px-4 px-2">No</button></>):(<><button className="hover:bg-fuchsia-700 bg-fuchsia-200     p-2 rounded-full " onClick={() => deletet(true,b.tid)}><MdDeleteForever  className="text-fuchsia-700 hover:text-fuchsia-200"  size={30} /></button></>)}
-          </div> </div>
+          </div></div>):""}
+           </div>
       ))}
 
 {dalert && (
