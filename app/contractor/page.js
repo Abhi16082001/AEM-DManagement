@@ -195,7 +195,7 @@ const data= await response.json()
 
 <div className="container h-[75vh] bg-blue-500 p-2 rounded-lg bg-opacity-20 w-11/12 lg:w-4/5 space-y-2 overflow-y-scroll">
 {calert && (
-    <div className="text-center mt-4 text-emerald-200 font-semibold">
+    <div className="text-center mt-4 text-indigo-200 font-semibold">
       {calert}
     </div>
   )}
@@ -206,9 +206,9 @@ const data= await response.json()
               {(!(sflag) || (b.cid.toLowerCase().includes(sstr.toLowerCase()) 
                          || b.name.toLowerCase().includes(sstr.toLowerCase())
                          || sstr==="") )?
-              (<div className='space-y-2 sm:space-x-2 sm:space-y-3 flex flex-col sm:flex-row sm:justify-between text-lg font-semibold bg-gradient-to-r from-emerald-700 to-emerald-800 rounded-md p-3  shadow-lg  container mx-auto'>
-                 <div onClick={() => handlecdetails(b)} className='bg-emerald-200 bg-opacity-60 text-emerald-950 hover:cursor-pointer hover:opacity-80 rounded-md py-3 px-5 w-full flex flex-col sm:flex-row sm:space-x-3'>
-            <span className='border-emerald-700 sm:border-b-0 border-b-2 sm:w- sm:border-r-2 sm:px-4' >{b.cid} </span> <span>{b.name}</span></div>
+              (<div className='space-y-2 sm:space-x-2 sm:space-y-3 flex flex-col sm:flex-row sm:justify-between text-lg font-semibold bg-gradient-to-r from-indigo-700 to-indigo-800 rounded-md p-3  shadow-lg  container mx-auto'>
+                 <div onClick={() => handlecdetails(b)} className='bg-indigo-200 bg-opacity-60 text-indigo-950 hover:cursor-pointer hover:opacity-80 rounded-md py-3 px-5 w-full flex flex-col sm:flex-row sm:space-x-3'>
+            <span className='border-indigo-700 sm:border-b-0 border-b-2 sm:w- sm:border-r-2 sm:px-4' >{b.cid} </span> <span>{b.name}</span></div>
        <div className="  flex flex-row sm:gap-8  justify-evenly">   <button className= "   hover:bg-blue-500 bg-blue-200   p-2 rounded-full" onClick={() => handledit(b)}><RiEditCircleFill  className="text-blue-500 hover:text-blue-200"  size={30}  /></button>
        { (dflag && chck===b.cid)?(<><button onClick={() => handledel(b.cid)} className="bg-red-500 hover:bg-opacity-50 rounded-full text-red-200 md:px-4 px-2">Yes</button > <button onClick={() => deletec(false,b.cid)} className="bg-green-500 hover:bg-opacity-50 text-green-200 rounded-full md:px-4 px-2">No</button></>):(<><button className="hover:bg-fuchsia-700 bg-fuchsia-200     p-2 rounded-full " onClick={() => deletec(true,b.cid)}><MdDeleteForever className="text-fuchsia-700 hover:text-fuchsia-200"  size={30} /></button></>)}
           </div></div>):"" }

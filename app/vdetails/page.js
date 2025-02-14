@@ -19,6 +19,7 @@ export default function Page() {
     const [dflag, setdflag] = useState(false)
     const [dalert, setdalert] = useState("")
     const [stf, setstf] = useState([])
+    const [ctr, setctr] = useState([])
 
     const fetchv = async () => {
         const response = await fetch(`/api/vdetails?vno=${encodeURIComponent(vd.vno)}`);
@@ -39,8 +40,15 @@ export default function Page() {
         setstf(sjson.result);
       };
       
+      const fetchc = async () => {
+        const response = await fetch("/api/alldata?dtyp=contractor");
+        let cjson = await response.json();
+        setctr(cjson.result);
+      };
+
       useEffect(() => {
          fetchs();
+         fetchc();
       },[]);
 
 
@@ -50,6 +58,9 @@ export default function Page() {
           [e.target.name]: e.target.value,
         });
       };
+
+    
+
 
       const handleditf = async (bul,dtls) => {
         setuflag("")
@@ -141,7 +152,7 @@ export default function Page() {
           });
           if(response.ok){
             console.log("Details Updated Sucessfully ! ")
-            setalert("Details Updated Successfully !!")
+            setalert("")
             seteflag(false)
            setvmodel({})
            setuflag("upd")
@@ -195,9 +206,13 @@ export default function Page() {
         setdflag(bul)
         setchck(id)
       }
-     
+   
+      
+    
+
 
     const adddetails = async (e) => {
+      
         e.preventDefault();
         setalert("Adding Details...")
         setuflag("")
@@ -210,7 +225,8 @@ export default function Page() {
           });
 console.log(response)
           if (response.ok) {
-            setalert("Details added Successfully!")
+         
+             setalert("Details added successfully...")
             setvmodel({})
             setvalert("")
             setdalert("")
@@ -257,6 +273,7 @@ console.log(response)
 <div  onClick={() => handleditf(true,b)} className="flex flex-row justify-center lg:px-2 bg-cyan-400 bg-opacity-40 rounded-lg text-teal-950 hover:cursor-pointer hover:bg-opacity-30">
   <p >{b.date}-{b.shft}</p> </div>
 <div className="flex flex-row justify-center space-x-2 border-b-2 md:border-b-0  md:px-1 border-teal-500"> <p> {b.sid}</p></div>
+<div className="flex flex-row justify-center space-x-2 border-b-2 md:border-b-0  md:px-1 border-teal-500"> <p> {b.cid}</p></div>
 <div className="flex flex-row justify-center border-b-2 md:border-b-0  md:px-1 border-teal-500"><p>{b.site}</p></div>
 </div>
 <div className="flex flex-col md:flex-row md:space-x-2 md:justify-between"><div className="flex flex-row justify-center space-x-1"><p>₹{b.rate}/{b.hrs?(<>h</>):(<>t</>)} -- {b.hrs?(<>{b.hrs} hrs</>):(<>{b.trip} trp</>)}</p></div>
@@ -367,6 +384,24 @@ console.log(response)
 
     />
 
+
+<label htmlFor="cid" className="block text-md font-semibold text-indigo-900">
+    Add in Contractor also:
+    </label>
+<select  onChange={onchange}  name="cid" id="cid" value={vmodel?.cid || ""}
+       className="flex justify-center gap-2 w-full py-2 mt-4 border-2 border-indigo-500 bg-indigo-300 bg-opacity-5 text-indigo-500 font-semibold rounded-full "
+       >
+        <option value="">Choose Contractor</option>
+{ctr.map((b) => (
+    
+    <option key={b.cid} value={`${b.cid}`}
+       className='space-y-2 sm:space-y-3 xs:flex justify-between text-teal-950 text-lg font-semibold bg-indigo-300 rounded-md p-4 shadow-lg  hover:text-indigo-50 hover:bg-indigo-400 hover:cursor-pointer hover:opacity-80 container mx-auto'
+       >{b.cid} : {b.name}
+   </option>
+  ))}
+</select>  
+
+
 {eflag? (<><div className="flex flex-col lg:flex-row "><button onClick={(e) => handleupdate(e)} 
       className="flex justify-center gap-2 w-full py-2 mt-4 border-2 border-indigo-500 bg-indigo-600 bg-opacity-50 text-indigo-50 font-semibold rounded-full  hover:bg-indigo-700 hover:text-indigo-50 "
       >Update Data</button>
@@ -397,6 +432,11 @@ console.log(response)
     >
       Add Data
     </button></>)}
+
+
+
+
+
   </form>
   {alert && (
     <div className="text-center mt-4 text-indigo-500 font-semibold">

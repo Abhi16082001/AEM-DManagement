@@ -5,7 +5,6 @@ import { BsFillFileEarmarkPersonFill } from "react-icons/bs";
 import { GiTruck } from "react-icons/gi";
 import { FaPeopleArrows } from "react-icons/fa";
 import { FaDailymotion } from "react-icons/fa6";
-import { HiOutlineClipboardDocumentList } from "react-icons/hi2";
 export default function Page() {
     const [pflag, setpflag] = useState(false)
     const [dmodel, setdmodel] = useState({})
@@ -53,11 +52,12 @@ export default function Page() {
       <div className="flex flex-col sm:flex-row sm:justify-evenly space-y-5 sm:space-y-0 ">
   <Link className="rounded-full font-mono hover:text-sky-800 font-extrabold text-sky-950 bg-opacity-60 hover:bg-opacity-20 flex flex-row justify-evenly p-10 sm:p-20 border-4 border-sky-700 text-lg sm:text-2xl bg-sky-500" href='staff'><BsFillFileEarmarkPersonFill size={30} /><p className="text-center">Staff</p></Link>
   <Link className="rounded-full font-mono hover:text-teal-800 font-extrabold text-teal-950 bg-opacity-60 hover:bg-opacity-20 flex flex-row justify-evenly p-10 sm:p-20 border-4 border-teal-700 text-lg sm:text-2xl bg-teal-500" href='vehicle'><GiTruck size={40} />Vehicle</Link>
-  <Link className="rounded-full font-mono hover:text-emerald-800 font-extrabold text-emerald-950 bg-opacity-60 hover:bg-opacity-20 flex flex-row justify-evenly p-10 sm:p-20 border-4 border-emerald-700 text-lg sm:text-2xl bg-emerald-500" href='contractor'><FaPeopleArrows size={30} />Contractor</Link>
   </div>
   <div className="flex  flex-col sm:flex-row  sm:justify-evenly space-y-5 sm:space-y-0 ">
-  <Link className="rounded-full font-mono hover:text-violet-800 font-extrabold text-violet-950 bg-opacity-60 hover:bg-opacity-20 flex flex-row justify-evenly p-10 sm:p-20 border-4 border-violet-700 text-lg sm:text-2xl bg-violet-500" href='tender'><HiOutlineClipboardDocumentList size={30} />Tender</Link>
-  <Link className="rounded-full font-mono hover:text-indigo-800 font-extrabold text-indigo-950 bg-opacity-60 hover:bg-opacity-20 flex flex-row justify-evenly p-10 sm:p-20 border-4 border-indigo-700 text-lg sm:text-2xl bg-indigo-500" href='daily'><FaDailymotion size={30} />Daily Summary</Link>
+  <Link className="rounded-full font-mono hover:text-indigo-800 font-extrabold text-indigo-950 bg-opacity-60 hover:bg-opacity-20 flex flex-row justify-evenly p-10 sm:p-20 border-4 border-indigo-700 text-lg sm:text-2xl bg-indigo-500" href='contractor'><FaPeopleArrows size={30} />Contractor</Link>
+  
+  <Link className="rounded-full font-mono hover:text-fuchsia-800 font-extrabold text-fuchsia-950 bg-opacity-60 hover:bg-opacity-20 flex flex-row justify-evenly p-10 sm:p-20 border-4 border-fuchsia-700 text-lg sm:text-2xl bg-fuchsia-500" href='daily'><FaDailymotion size={30} />Daily Summary</Link>
+ 
   </div>
   </div>
   <div  className="bg-blue-500 bg-opacity-50 p-2 justify-items-center rounded-md w-full sm:w-4/5 ">

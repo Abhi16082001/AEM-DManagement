@@ -7,19 +7,15 @@ import { useSearchParams } from "next/navigation";
 export default function Page() {
   const cardRefs = useRef([]);
   const [selid, setselid] = useState(null)
-  const [sflag, setsflag] = useState(false)
-const [eflag, seteflag] = useState(false)
 const [uflag, setuflag] = useState("")
 const [vhcl, setvhcl] = useState([])
 const [cntr, setcntr] = useState([])
-const [chck, setchck] = useState("")
 const [cmodel, setcmodel] = useState({})
 const [alert, setalert] = useState("");
 const [calert, setcalert] = useState("Loading...")
 const [cd, setcd] = useState(null)
-const [dflag, setdflag] = useState(false)
-const [dalert, setdalert] = useState("")
 const [stf, setstf] = useState([])
+const [sflag, setsflag] = useState(false)
 
 const fetchc = async () => {
   console.log('I am in fetchc',cd)
@@ -31,21 +27,11 @@ const fetchc = async () => {
   if (cjson.ac.length === 0) setcalert("No Details Added");
 };
 
-useEffect(() => {
-  if(cd){ fetchc();}
-},[cd,uflag]);
-
-  
 const fetchs = async () => {
   const response = await fetch("/api/alldata?dtyp=staff");
   let sjson = await response.json();
   setstf(sjson.result);
 };
-
-useEffect(() => {
-   fetchs();
-},[]);
-
 
 
 const fetchv = async () => {
@@ -55,30 +41,36 @@ const fetchv = async () => {
 };
 
 useEffect(() => {
-   fetchv();
-},[]);
-      const onchange = (e) => {
-        setcmodel({
-          ...cmodel,cid:cd.cid,
-          [e.target.name]: e.target.value,
-        });
-      };
+  if(cd){ fetchc();
+    fetchv();
+    fetchs();
+  }
+},[cd,uflag]);
 
-      const calrht = (mul,rte) => {
+  
 
-        const rate= parseFloat(rte);
-        const mulpr= parseFloat(mul);
-        const tot=rate*mulpr
-        setcmodel({
-          ...cmodel,odtot:tot.toString()
-        });}
+
+
+
+const onchange = (e) => {
+  setcmodel({
+    ...cmodel,
+    [e.target.name]: e.target.value,
+  });
+};
+
+
+
+   
+
+     
 
 
         const handlsrch = async (e,isfnd) => {
           e.preventDefault(); 
         
             setalert("Searching...");
-            const co = { ...cmodel, dtype:"contractor" };
+            const co = { ...cmodel, cid:cd.cid, dtype:"vehicle" };
             try {
               const response = await fetch(`/api/search?model=${encodeURIComponent(JSON.stringify(co))}`,{
                 method: 'GET',
@@ -126,131 +118,27 @@ useEffect(() => {
             }}
           }, [selid, cntr]);
           
- 
-
-      const handledel = async (mid) => {
-        setdalert(`Deleting Data ...`)
-        setcalert("")
-        setalert("")
-        console.log(mid)
-        console.log({mid})
-        // console.log(JSON.stringify({ bid}))
-        try {
-            const response = await fetch('/api/cdetails', {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ mid} ), // Send the ID in the request body
-            });
-      
-            const data = await response.json();
-            if (!response.ok) {
-              setdalert(data.message)
-                throw new Error(data.message || 'Failed to delete the Data');
-            }
-      
-            console.log(data.message); // Log success message
-            setdalert(` Data deleted successfully.`)
-            seteflag(false)
-            setuflag("del")
-        } catch (erro) {
-            console.log('Error:', erro);
-        }
-      };
-
-      const deletec = async (bul,id) => {
-        setuflag("")
-        setcalert("")
-        setalert("")
-        setdalert("")
-        setdflag(bul)
-        setchck(id); 
-      }
-      const handleupdate = async (e) => {
-        setalert("Updating Details...")
-    
-        setcalert("")
-        setdalert("")
-      
-        e.preventDefault();
-        const co = {...cmodel }; 
-        try{
-          const response= await fetch('api/cdetails',{
-            method:'PUT',
-            headers:{ 'Content-Type':'application/json'},
-            body: JSON.stringify(co)
-          });
-          if(response.ok){
-            console.log("Details Updated Sucessfully ! ")
-            setalert("Details Updated Successfully !!")
-            setuflag("upd")
-            seteflag(false)
-            setcmodel({})
-            
-          }
-          else{
-            console.log("Error Updating Details !!")
-          }
-        }
-        catch(error){
-      console.error('Error:',error);
-        }
-      }
-      const handleditf = async (bul,dtls) => {
-        setuflag("")
-        setcalert("")
-        setalert("")
-        setdalert("")
-        setsflag(false)
-        seteflag(bul)
-        setcmodel(dtls)
-        setselid(null)
-      }
-
-      const handlsflag = async (bul) => {
-        setuflag("")
-        setcalert("")
-        setalert("")
-        setdalert("")
-        seteflag(false)
-        setsflag(bul)
-        setcmodel({})
-        setselid(null)
-        if(!bul){
-          setuflag("srch")
-          setcalert("Loading...")
-          setselid(null)
-        }
-      }
-
-      const addcntr = async (e) => {
-        e.preventDefault();
-        setuflag("")
-        setalert("Adding details...")
-        setcalert("")
-        setdalert("")
-        const co = {  ...cmodel };
-        try {
-          const response = await fetch('/api/cdetails', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(co),
-          });
-console.log(response)
-          if (response.ok) {
-            setalert("Details added Successfully!")
-            setuflag("add")
+          const handlsflag = async (bul) => {
+            setuflag("")
             setcalert("")
+            setalert("")
+            setsflag(bul)
             setcmodel({})
-          } else {
-            setalert("Error in adding Details.");
+            setselid(null)
+            if(!bul){
+              setuflag("srch")
+              setcalert("Loading...")
+            }
           }
-        } catch (error) {
-          setalert("Error in adding Details.");
-          console.error('Error:', error);
-        }
-      };
+
+   
+
+    
+   
+
+   
+
+  
  return (
   <>
   <Suspense fallback={<div>Loading...</div>}>
@@ -259,10 +147,10 @@ console.log(response)
       </Suspense>
   <div className="flex-col justify-items-center space-y-2 p-1 ">
   <div className="bg-blue-100 rounded-full w-full p-1 flex flex-row justify-evenly sm:justify-between sm:px-10 ">
-  <button className="bg-blue-300 rounded-full p-2 hover:bg-blue-400" onClick={() => handlsflag(true)}>  <FcSearch size={30} />  </button>
+   <button className="bg-blue-300 rounded-full p-2 hover:bg-blue-400" onClick={() => handlsflag(true)}>  <FcSearch size={30} />  </button>
   <Link className="bg-blue-300 rounded-full p-2 hover:bg-blue-400" href="/menu"><FcHome  size={30}/></Link>
  </div>
- <div className="bg-gradient-to-r from-indigo-600 to-purple-500 text-emerald-100 w-full text-sm lg:text-lg flex flex-col md:flex-row md:justify-between  font-serif font-semibold  p-2  rounded-md">
+ <div className="bg-gradient-to-r from-indigo-600 to-purple-500 text-indigo-100 w-full text-sm lg:text-lg flex flex-col md:flex-row md:justify-between  font-serif font-semibold  p-2  rounded-md">
  <p> Contractor ID: {cd?(<>{cd.cid} </>):"Loading..."} </p>
  <p>Ctr/C Name: {cd?(<>{cd.name} </>):"Loading..."} </p>
  <p>Previous Balance: {cd?(<>{cd.pbal} </>):"Loading..."} </p>
@@ -277,38 +165,35 @@ console.log(response)
 className={`  transition ${
               selid === b._id
                 ? 'bg-white border-indigo-900 border-2'
-                : ' bg-emerald-100 '
-            }   flex flex-col space-y-1 lg:space-y-2  text-sm lg:text-lg rounded-lg p-1 text-emerald-800 font-mono `}>
+                : ' bg-indigo-100 '
+            }   flex flex-col space-y-1 lg:space-y-2  text-sm lg:text-lg rounded-lg p-1 text-indigo-800 font-mono `}>
   <div className="flex flex-col md:flex-row md:justify-between md:space-x-2">
-<div  onClick={() => handleditf(true,b)} className="flex flex-row justify-center lg:px-2 bg-cyan-400 bg-opacity-40 rounded-lg text-teal-950 hover:cursor-pointer hover:bg-opacity-30">
+<div className="flex flex-row justify-center lg:px-2 bg-cyan-400 bg-opacity-40 rounded-lg text-teal-950 hover:cursor-pointer hover:bg-opacity-30">
   <p >{b.date}-{b.shft}</p> </div>
-<div className="flex flex-row justify-center space-x-2 border-b-2 md:border-b-0  md:px-1 border-emerald-500"> <p>{b.vno}</p></div>
-<div className="flex flex-row justify-center space-x-2 border-b-2 md:border-b-0  md:px-1 border-emerald-500"> <p> {b.sid}</p></div>
-<div className="flex flex-row justify-center border-b-2 md:border-b-0  md:px-1 border-emerald-500"><p>{b.site}</p></div>
+<div className="flex flex-row justify-center space-x-2 border-b-2 md:border-b-0  md:px-1 border-indigo-500"> <p>{b.vno}</p></div>
+<div className="flex flex-row justify-center space-x-2 border-b-2 md:border-b-0  md:px-1 border-indigo-500"> <p> {b.sid}</p></div>
+<div className="flex flex-row justify-center border-b-2 md:border-b-0  md:px-1 border-indigo-500"><p>{b.site}</p></div>
 </div>
-<div className="flex flex-col md:flex-row md:space-x-2 md:justify-between"><div className="flex flex-row justify-center space-x-1">₹{b.rate}/{b.hrs?(<>h</>):(<>t</>)} * {b.hrs?(<>{b.hrs}h</>):(<>{b.trip}t</>)} =₹{b.odtot}</div>
-<div onClick={() => deletec(true,b._id)} className=" flex flex-row md:w-3/4 px-1 justify-center md:px-2 bg-red-300 bg-opacity-80 rounded-lg text-teal-900 hover:cursor-pointer hover:bg-opacity-60">{b.rmrk}
+<div className="flex flex-col md:flex-row md:space-x-2 md:justify-between"><div className="flex flex-row justify-center space-x-1">{b.hrs?(<>{b.hrs} Hrs</>):(<>{b.trip} trp</>)} at ₹{b.rate}/{b.hrs?(<>h</>):(<>t</>)}   </div>
+<div  className=" flex flex-row md:w-3/4 px-1 justify-center md:px-2 bg-red-300 bg-opacity-80 rounded-lg text-teal-900 hover:cursor-pointer hover:bg-opacity-60">{b.rmrk}
 
 </div>
 </div>
-{ (dflag && chck===b._id)? (<><div className="flex flex-row justify-evenly "><p className="text-red-700">Deletion ! Sure ?</p><button  onClick={() => handledel(b._id)} className="bg-red-500 text-red-200 px-2 md:px-10 rounded-full hover:bg-opacity-80">Yes</button > <button onClick={() => deletec(false,b._id)} className="bg-indigo-500 text-indigo-200 rounded-full px-3 md:px-10 hover:bg-opacity-80">No</button></div></>):(<></>)}
+
 </div>
  ))}
              
 
-{dalert && (
-    <div className="text-center mt-4 text-red-600 font-semibold">
-      {dalert}
-    </div>
-  )}
+
   {calert && (
-    <div className="text-center mt-4 text-emerald-200 font-semibold">
+    <div className="text-center mt-4 text-indigo-200 font-semibold">
       {calert}
     </div>
   )}
 </div>
+{sflag?(
  <div className=" border-2 p-2 border-indigo-300 bg-indigo-200 rounded-md w-full sm:w-4/5">
-<form onSubmit={addcntr} className="   space-y-3">
+<form className="   space-y-3">
 <div className="text-center text-sm lg:text-lg font-semibold font-mono bg-indigo-500 bg-opacity-50 p-2 rounded-lg  ">Add Details: </div>
 
 <label htmlFor="date" className="block text-md font-semibold text-indigo-500">
@@ -395,16 +280,7 @@ className={`  transition ${
       onChange={onchange}       placeholder="Enter trip"
       className=" w-full px-4 py-2 border border-indigo-500  bg-indigo-600 bg-opacity-20 rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-600"
     />
-    
-    <span htmlFor="odtot" className="block text-md font-semibold text-center p-2 rounded-lg bg-indigo-300 bg-opacity-80 border-indigo-600   text-indigo-500 hover:cursor-pointer hover:bg-indigo-400 hover:text-indigo-100"
-      onClick={() => calrht(cmodel.trip,cmodel.rate)}>
-     Calculate Rate * Trips:
-    </span>
-    <input
-      pattern="^(?!\s*$).+" title="This field cannot be empty or just spaces" value={cmodel?.odtot || ""} required type="text" name="odtot" id="odtot"
-      onChange={onchange} 
-     className=" w-full px-4 py-2 border border-indigo-500  bg-indigo-600 bg-opacity-20 rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-600"
-    />
+  
     
     </>):   (<><label htmlFor="hrs" className="block text-md font-semibold text-indigo-500">
       No. of Hours:
@@ -412,14 +288,6 @@ className={`  transition ${
     <input
       pattern="^(?!\s*$).+" title="This field cannot be empty or just spaces" value={cmodel?.hrs || ""} required type="text" name="hrs" id="hrs"
       onChange={onchange}       placeholder="Enter hours"
-      className=" w-full px-4 py-2 border border-indigo-500  bg-indigo-600 bg-opacity-20 rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-600"
-    />
-    <span htmlFor="odtot" className="block text-md font-semibold text-center p-2 rounded-lg bg-indigo-300 bg-opacity-80 border-indigo-600   text-indigo-500 hover:cursor-pointer hover:bg-indigo-400 hover:text-indigo-100"
-      onClick={() => calrht(cmodel.hrs,cmodel.rate)}>
-     Calculate Rate * Hours:
-    </span>
-    <input
-      pattern="^(?!\s*$).+" title="This field cannot be empty or just spaces" value={cmodel?.odtot || ""} required type="text" name="odtot" id="odtot" onChange={onchange} 
       className=" w-full px-4 py-2 border border-indigo-500  bg-indigo-600 bg-opacity-20 rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-600"
     />
     
@@ -436,18 +304,9 @@ className={`  transition ${
 
     />
 
-    {eflag? (<><div className="flex flex-col lg:flex-row "><button onClick={(e) => handleupdate(e)} 
-      className="flex justify-center gap-2 w-full py-2 mt-4 border-2 border-indigo-500 bg-indigo-600 bg-opacity-50 text-indigo-50 font-semibold rounded-full  hover:bg-indigo-700 hover:text-indigo-50 "
-      >Update Data</button>
-      
-      <button onClick={(e) => handleditf(false,null)} 
-      className="flex justify-center gap-2 w-full py-2 mt-4 border-2 border-indigo-500 bg-indigo-600 bg-opacity-50 text-indigo-50 font-semibold rounded-full  hover:bg-indigo-700 hover:text-indigo-50 "
-      >Cancel</button></div>
-      
-      </>):
-    (<></>)}
+    
 
-{sflag? (<><div className="flex flex-col lg:flex-row "><button onClick={(e) => handlsrch(e,false)} 
+<div className="flex flex-col lg:flex-row "><button onClick={(e) => handlsrch(e,false)} 
       className="flex justify-center gap-2 w-full py-2 mt-4 border-2 border-indigo-500 bg-indigo-600 bg-opacity-50 text-indigo-50 font-semibold rounded-full  hover:bg-indigo-700 hover:text-indigo-50 "
       >Search</button>
       <button onClick={(e) => handlefind(e)} 
@@ -455,24 +314,24 @@ className={`  transition ${
       >Find</button>
       <button onClick={(e) => handlsflag(false)} 
       className="flex justify-center gap-2 w-full py-2 mt-4 border-2 border-indigo-500 bg-indigo-600 bg-opacity-50 text-indigo-50 font-semibold rounded-full  hover:bg-indigo-700 hover:text-indigo-50 "
-      >Cancel</button></div>
+      >Cancel</button>
+</div>
       
-      </>):
-    (<></>)}
+      
 
-    {(eflag || sflag)? (<> </>):(<><button
-      type="submit"
-      className="flex justify-center gap-2 w-full py-2 mt-4 border-2 border-indigo-500 bg-indigo-600 bg-opacity-50 text-indigo-50 font-semibold rounded-full  hover:bg-indigo-700 hover:text-indigo-50 "
-    >
-      Add Data
-    </button></>)}
+  
+
+
+
 
   </form>
   {alert && (
     <div className="text-center mt-4 text-indigo-500 font-semibold">
       {alert}
     </div>
-  )}</div>
+  )}
+  </div>):(<></>)
+}
 </div>
   </>
  )

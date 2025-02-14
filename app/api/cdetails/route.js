@@ -11,7 +11,7 @@ export async function GET(request) {
   const client = await getClient();
     try {
       const database = client.db('AnilEarthMover');
-      const cntr = database.collection('contractor');
+      const cntr = database.collection('vehicle');
       // Query for a movie that has the title 'Back to the Future'
       // const query = { title: 'Back to the Future' };
       const query = {cid:id  };
